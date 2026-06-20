@@ -5,7 +5,7 @@ import { ProgressRing } from '../components/ProgressRing';
 import { QuestionCard } from '../components/QuestionCard';
 import { listQuestionsForSubject } from '../data/loader';
 import { gradeColor, scoreColor, formatDate, formatDuration } from '../lib/grade';
-import type { Question } from '../types/exam';
+import type { AttemptAnswer, Question } from '../types/exam';
 
 export function Results() {
   const { attemptId } = useParams<{ attemptId: string }>();
@@ -15,11 +15,12 @@ export function Results() {
   const [showAll, setShowAll] = useState(false);
 
   // Memoize derived data so re-renders (e.g. toggle showAll) don't recompute.
-  const { reconstructedQuestions, topicStats } = useMemo(() => {
+  const { reconstructedQuestions, topicStats, answerMap } = useMemo(() => {
     if (!attempt) {
       return {
         reconstructedQuestions: [] as Question[],
         topicStats: [] as { topic: string; total: number; correct: number; pct: number }[],
+        answerMap: new Map<string, AttemptAnswer>(),
       };
     }
     // Build a lookup map once: O(N) instead of O(N²) per question.
@@ -59,7 +60,9 @@ export function Results() {
       }))
       .sort((a, b) => a.pct - b.pct);
 
-    return { reconstructedQuestions: reconstructed, topicStats: topics };
+    const answerMap = new Map(attempt.answers.map((a) => [a.questionId, a]));
+
+    return { reconstructedQuestions: reconstructed, topicStats: topics, answerMap };
   }, [attempt]);
 
   // Count real vs generated answers in this attempt for the header summary.
@@ -234,7 +237,7 @@ export function Results() {
         {showAll ? (
           <div className="space-y-4">
             {reconstructedQuestions.map((q, i) => {
-              const a = attempt.answers.find((x) => x.questionId === q.id);
+              const a = answerMap.get(q.id);
               return (
                 <div key={q.id}>
                   <QuestionCard

@@ -171,7 +171,6 @@ describe('useProgressStore', () => {
       ],
       totalQuestions: 2,
       correctCount: 1,
-      questions: [],
     };
     const attempt = useProgressStore.getState().recordAttempt(input);
     expect(attempt.percentage).toBe(50);
@@ -192,7 +191,6 @@ describe('useProgressStore', () => {
       answers: [],
       totalQuestions: 0,
       correctCount: 0,
-      questions: [],
     };
     useProgressStore.getState().recordAttempt(input);
     useProgressStore.getState().recordAttempt(input);

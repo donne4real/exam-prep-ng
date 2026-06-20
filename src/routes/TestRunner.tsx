@@ -110,7 +110,6 @@ export function TestRunner() {
       answers: attemptAnswers,
       totalQuestions: questions.length,
       correctCount,
-      questions,
     });
     setConfirming(false);
     navigate(`/results/${attempt.id}`);

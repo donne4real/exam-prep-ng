@@ -3,7 +3,7 @@
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { Attempt, AttemptAnswer, Question } from '../types/exam';
+import type { Attempt, AttemptAnswer } from '../types/exam';
 import { gradeFor } from '../lib/grade';
 import { STORAGE_KEYS } from './storageKeys';
 
@@ -17,7 +17,6 @@ export interface RecordAttemptInput {
   answers: AttemptAnswer[];
   totalQuestions: number;
   correctCount: number;
-  questions: Question[];
 }
 
 interface ProgressState {
@@ -28,7 +27,7 @@ interface ProgressState {
 }
 
 function makeId(): string {
-  return `att_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+  return crypto.randomUUID();
 }
 
 export const useProgressStore = create<ProgressState>()(

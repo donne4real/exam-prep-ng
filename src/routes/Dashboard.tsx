@@ -20,6 +20,7 @@ export function Dashboard() {
   const attempts = useProgressStore((s) => s.attempts);
   const clear = useProgressStore((s) => s.clear);
   const [confirmClear, setConfirmClear] = useState(false);
+  const [showAllAttempts, setShowAllAttempts] = useState(false);
 
   // Memoize derived aggregates so re-renders don't redo the full pass.
   const avg = useMemo(() => averageScore(attempts), [attempts]);
@@ -163,32 +164,45 @@ export function Dashboard() {
             </Link>
           </div>
         ) : (
-          <div className="card divide-y divide-neutral-200 dark:divide-neutral-800">
-            {attempts.slice(0, 20).map((a) => (
-              <Link
-                key={a.id}
-                to={`/results/${a.id}`}
-                className="flex items-center justify-between gap-3 p-4 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition"
+          <>
+            <div className="card divide-y divide-neutral-200 dark:divide-neutral-800">
+              {(showAllAttempts ? attempts : attempts.slice(0, 20)).map((a) => (
+                <Link
+                  key={a.id}
+                  to={`/results/${a.id}`}
+                  className="flex items-center justify-between gap-3 p-4 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition"
+                >
+                  <div className="min-w-0">
+                    <div className="font-medium truncate">
+                      {a.exam} · {a.subject} · {a.year}
+                    </div>
+                    <div className="text-xs text-neutral-500 dark:text-neutral-400">
+                      {formatDate(a.submittedAt)}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className={`pill text-white ${gradeColor(a.gradeBand)}`}>
+                      {a.gradeBand}
+                    </span>
+                    <span className="font-semibold tabular-nums">
+                      {a.percentage}%
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+            {attempts.length > 20 ? (
+              <button
+                type="button"
+                onClick={() => setShowAllAttempts((v) => !v)}
+                className="mt-3 text-sm font-medium text-nigeria-green dark:text-nigeria-green-light hover:underline w-full text-center"
               >
-                <div className="min-w-0">
-                  <div className="font-medium truncate">
-                    {a.exam} · {a.subject} · {a.year}
-                  </div>
-                  <div className="text-xs text-neutral-500 dark:text-neutral-400">
-                    {formatDate(a.submittedAt)}
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <span className={`pill text-white ${gradeColor(a.gradeBand)}`}>
-                    {a.gradeBand}
-                  </span>
-                  <span className="font-semibold tabular-nums">
-                    {a.percentage}%
-                  </span>
-                </div>
-              </Link>
-            ))}
-          </div>
+                {showAllAttempts
+                  ? 'Show less'
+                  : `Show all ${attempts.length} attempts`}
+              </button>
+            ) : null}
+          </>
         )}
       </section>
 
