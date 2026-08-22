@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, useNavigate } from 'react-router-dom';
 import { App } from './App';
 import './styles/index.css';
 import { applyTheme, useSettingsStore } from './store/settings';
@@ -19,9 +19,23 @@ if (typeof window !== 'undefined' && window.matchMedia) {
   });
 }
 
+// Handle SPA routing after GitHub Pages 404 fallback redirect
+function RedirectHandler() {
+  const navigate = useNavigate();
+  const redirectPath = sessionStorage.getItem('spa_redirect');
+  if (redirectPath) {
+    sessionStorage.removeItem('spa_redirect');
+    // Strip the base path prefix if present
+    const path = redirectPath.replace(/^\/exam-prep-ng/, '') || '/';
+    navigate(path, { replace: true });
+  }
+  return null;
+}
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>
+      <RedirectHandler />
       <App />
     </BrowserRouter>
   </React.StrictMode>,

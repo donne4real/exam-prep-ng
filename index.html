@@ -13,6 +13,14 @@
       rel="stylesheet"
     />
     <title>Nigerian Exam Prep</title>
+    <script>
+      // Capture redirect path before SPA loads (set by 404.html)
+      var redirectPath = sessionStorage.redirect;
+      if (redirectPath) {
+        delete sessionStorage.redirect;
+        sessionStorage.setItem('spa_redirect', redirectPath);
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
