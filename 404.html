@@ -14,10 +14,9 @@
     />
     <title>Nigerian Exam Prep</title>
     <script>
-      // GitHub Pages 404 fallback — restore original route so React Router handles it
-      var redirect = sessionStorage.redirect;
-      delete sessionStorage.redirect;
-      location.replace(redirect || '/exam-prep-ng/');
+      // Save the original path the user tried to visit
+      sessionStorage.redirect = location.pathname;
+      location.replace('/exam-prep-ng/index.html');
     </script>
   </head>
   <body>
