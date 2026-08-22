@@ -3,6 +3,8 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
+  // Set base path for GitHub Pages deployment at /exam-prep-ng/
+  base: "/exam-prep-ng/",
   plugins: [
     react(),
     VitePWA({
