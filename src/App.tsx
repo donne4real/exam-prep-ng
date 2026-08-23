@@ -1,5 +1,5 @@
 ﻿import { Component, Suspense, lazy, useEffect } from 'react';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import { Shell } from './components/Shell';
 import { InstallPrompt } from './components/InstallPrompt';
 import { loadQuestions } from './data/loader';
@@ -30,18 +30,6 @@ const Languages = lazy(() =>
 
 export function App() {
   const location = useLocation();
-  const navigate = useNavigate();
-
-  // Handle GitHub Pages SPA routing: restore original path from 404.html redirect
-  useEffect(() => {
-    const redirectPath = sessionStorage.getItem('spa_redirect');
-    if (redirectPath) {
-      sessionStorage.removeItem('spa_redirect');
-      // Strip base path prefix if present
-      const path = redirectPath.replace(/^\/exam-prep-ng/, '') || '/';
-      navigate(path, { replace: true });
-    }
-  }, [navigate]);
 
   // Kick off data load as soon as the app boots.
   useEffect(() => {

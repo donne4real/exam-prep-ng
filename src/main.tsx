@@ -21,7 +21,7 @@ if (typeof window !== 'undefined' && window.matchMedia) {
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/exam-prep-ng">
       <App />
     </BrowserRouter>
   </React.StrictMode>,
