@@ -21,7 +21,9 @@ if (typeof window !== 'undefined' && window.matchMedia) {
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <BrowserRouter basename="/exam-prep-ng">
+    {/* BASE_URL follows the build's base path: /exam-prep-ng on GitHub
+        Pages, '' (root) on Netlify. */}
+    <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '')}>
       <App />
     </BrowserRouter>
   </React.StrictMode>,

@@ -2,9 +2,14 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
+// GitHub Pages serves the site under /exam-prep-ng/; Netlify (and most
+// other hosts) serve it at the domain root. Netlify sets NETLIFY=true in
+// its build environment, so one build config works for both.
+const base = process.env.NETLIFY ? '/' : '/exam-prep-ng/';
+
 export default defineConfig({
   // Set base path for GitHub Pages deployment at /exam-prep-ng/
-  base: "/exam-prep-ng/",
+  base,
   plugins: [
     react(),
     VitePWA({
@@ -19,9 +24,10 @@ export default defineConfig({
         display: 'standalone',
         orientation: 'portrait',
         // Must match `base` — the app is served from /exam-prep-ng/ on
-        // GitHub Pages. A scope wider than the SW's own path breaks installs.
-        scope: '/exam-prep-ng/',
-        start_url: '/exam-prep-ng/',
+        // GitHub Pages and from / on Netlify. A scope wider than the SW's
+        // own path breaks installs.
+        scope: base,
+        start_url: base,
         icons: [
           {
             src: 'pwa-192x192.png',
