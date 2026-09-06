@@ -2,7 +2,7 @@
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { Shell } from './components/Shell';
 import { InstallPrompt } from './components/InstallPrompt';
-import { loadQuestions } from './data/loader';
+import { loadIndex } from './data/loader';
 
 // Lazy-load route components to keep initial bundle small.
 const Home = lazy(() => import('./routes/Home').then((m) => ({ default: m.Home })));
@@ -24,6 +24,9 @@ const Flashcards = lazy(() =>
 const FlashcardDeck = lazy(() =>
   import('./routes/Flashcards').then((m) => ({ default: m.FlashcardDeck })),
 );
+const YearPicker = lazy(() =>
+  import('./routes/YearPicker').then((m) => ({ default: m.YearPicker })),
+);
 const Languages = lazy(() =>
   import('./routes/Languages').then((m) => ({ default: m.Languages })),
 );
@@ -43,7 +46,7 @@ export function App() {
 
   // Kick off data load as soon as the app boots.
   useEffect(() => {
-    void loadQuestions();
+    void loadIndex();
   }, []);
 
   // Scroll to top on navigation for predictable UX.
@@ -59,7 +62,11 @@ export function App() {
             <Route path="/" element={<Home />} />
             <Route path="/exam/:examId" element={<Subjects />} />
             <Route
-              path="/practice/:examId/:subjectId"
+              path="/years/:examId/:subjectId"
+              element={<YearPicker />}
+            />
+            <Route
+              path="/practice/:examId/:subjectId/:year?"
               element={<TestRunner />}
             />
             <Route path="/results/:attemptId" element={<Results />} />

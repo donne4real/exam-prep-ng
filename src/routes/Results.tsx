@@ -1,9 +1,9 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useProgressStore } from '../store/progress';
 import { ProgressRing } from '../components/ProgressRing';
 import { QuestionCard } from '../components/QuestionCard';
-import { listQuestionsForSubject } from '../data/loader';
+import { ensureBank, getBank, getBankStatus } from '../data/loader';
 import type { Question } from '../types/exam';
 
 export function Results() {
@@ -12,6 +12,14 @@ export function Results() {
   const attempts = useProgressStore((s) => s.attempts);
   const attempt = attempts.find((a) => a.id === attemptId);
   const [showAll, setShowAll] = useState(false);
+  const [, setTick] = useState(0);
+
+  // The bank for this subject loads on demand; re-render when it arrives.
+  useEffect(() => {
+    if (attempt) void ensureBank(attempt.exam, attempt.subject).then(() => setTick((t) => t + 1));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [attempt?.id]);
+  const bankReady = attempt ? getBankStatus(attempt.exam, attempt.subject) === 'ready' : false;
 
   if (!attempt) {
     return (
@@ -41,16 +49,18 @@ export function Results() {
 
   // Reconstruct questions (best-effort — fall back to placeholder when content changed).
   const reconstructedQuestions: Question[] = attempt.answers.map((a) => {
-    const fromBank = listQuestionsForSubject(attempt.exam, attempt.subject).find(
-      (q) => q.id === a.questionId,
-    );
+    const fromBank = bankReady
+      ? getBank(attempt.exam, attempt.subject).find((q) => q.id === a.questionId)
+      : undefined;
     return (
       fromBank ?? {
         id: a.questionId,
         exam: attempt.exam,
         subject: attempt.subject,
         year: attempt.year || 0,
-        prompt: '(Question no longer in local question bank)',
+        prompt: bankReady
+          ? '(Question no longer in local question bank)'
+          : 'Loading question…',
         options: [],
         correctOptionId: '',
       }

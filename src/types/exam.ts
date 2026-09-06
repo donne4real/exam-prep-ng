@@ -17,6 +17,31 @@ export interface SubjectMeta {
   topics: string[];
 }
 
+/** Subject entry in the lightweight data index (no questions inside). */
+export interface SubjectIndex extends SubjectMeta {
+  /** Total questions in this subject's bank file. */
+  questionCount: number;
+  /** Exam years actually present in the bank, newest first. */
+  years: number[];
+  /** Questions per year, key = year as string. */
+  yearCounts: Record<string, number>;
+  /** Bank file path relative to the data directory. */
+  file: string;
+}
+
+export interface BankIndex {
+  version: number;
+  generatedAt?: string;
+  exams: ExamMeta[];
+  subjects: SubjectIndex[];
+}
+
+/** A per-subject bank file: data/<file> */
+export interface BankFile {
+  subject: { id: string; exam: ExamType; name: string };
+  questions: Question[];
+}
+
 export interface QuestionOption {
   /** Stable id (e.g. "a", "b", "c", "d"). */
   id: string;

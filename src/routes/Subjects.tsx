@@ -1,6 +1,11 @@
 import { Link, useParams } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
-import { listSubjects, listQuestionsForSubject, getState, subscribe } from '../data/loader';
+import {
+  countQuestionsForSubject,
+  getState,
+  listSubjects,
+  subscribe,
+} from '../data/loader';
 import type { ExamType } from '../types/exam';
 import { useSettingsStore } from '../store/settings';
 import { useProgressStore } from '../store/progress';
@@ -53,11 +58,11 @@ export function Subjects() {
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {subjects.map((subject) => {
           const attempted = counts.get(subject.name) ?? 0;
-          const questionCount = listQuestionsForSubject(exam, subject.name).length;
+          const questionCount = countQuestionsForSubject(exam, subject.name);
           return (
             <Link
               key={subject.id}
-              to={`/practice/${exam}/${encodeURIComponent(subject.name)}`}
+              to={`/years/${exam}/${encodeURIComponent(subject.name)}`}
               onClick={() => setLast(exam, subject.name)}
               className="card p-4 hover:border-nigeria-green hover:shadow-md transition"
             >

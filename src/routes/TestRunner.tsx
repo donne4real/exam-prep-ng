@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
-  listQuestionsForSubject,
+  ensureBank,
+  getBank,
+  getBankStatus,
   getExamMeta,
   getState,
   subscribe,
-  loadQuestions,
 } from '../data/loader';
 import type { AttemptAnswer, ExamType, Question } from '../types/exam';
 import { QuestionCard } from '../components/QuestionCard';
@@ -13,14 +14,19 @@ import { Timer } from '../components/Timer';
 import { useProgressStore } from '../store/progress';
 
 const KNOWN: ExamType[] = ['BECE', 'NECO', 'JAMB', 'WAEC'];
+// Below this many questions for a chosen year, fall back to a mixed set.
+const MIN_YEAR_QUESTIONS = 10;
+const MAX_SESSION_QUESTIONS = 40;
 
 export function TestRunner() {
-  const { examId, subjectId } = useParams<{
+  const { examId, subjectId, year: yearParam } = useParams<{
     examId: string;
     subjectId: string;
+    year?: string;
   }>();
   const exam = (KNOWN.includes(examId as ExamType) ? examId : 'BECE') as ExamType;
   const subject = subjectId ? decodeURIComponent(subjectId) : '';
+  const selectedYear = yearParam && /^\d{4}$/.test(yearParam) ? Number(yearParam) : null;
 
   const navigate = useNavigate();
   const recordAttempt = useProgressStore((s) => s.recordAttempt);
@@ -28,22 +34,38 @@ export function TestRunner() {
   const [tick, setTick] = useState(0);
   useEffect(() => subscribe(() => setTick((t) => t + 1)), []);
   useEffect(() => {
-    void loadQuestions();
-  }, []);
+    void ensureBank(exam, subject);
+  }, [exam, subject]);
 
-  // Pull all questions for the subject and shuffle to give a different test each time
-  const questions = useMemo(() => {
-    const all = listQuestionsForSubject(exam, subject);
+  const bankStatus = getBankStatus(exam, subject);
+
+  // Pull the subject's questions, filter to the chosen year when there are
+  // enough of them, and shuffle for a different test each time.
+  const { questions, pooledFromOtherYears } = useMemo(() => {
+    const all = getBank(exam, subject);
+    let pool = all;
+    let pooledFromOtherYears = false;
+    if (selectedYear != null) {
+      const exact = all.filter((q) => q.year === selectedYear);
+      if (exact.length >= MIN_YEAR_QUESTIONS) {
+        pool = exact;
+      } else if (all.length > exact.length) {
+        pooledFromOtherYears = true;
+      }
+    }
     // Shuffle (Fisher-Yates)
-    const shuffled = [...all];
+    const shuffled = [...pool];
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
-    // Cap to 40 questions per session to keep the test manageable
-    return shuffled.slice(0, Math.min(40, shuffled.length));
+    // Cap the session length to keep the test manageable.
+    return {
+      questions: shuffled.slice(0, Math.min(MAX_SESSION_QUESTIONS, shuffled.length)),
+      pooledFromOtherYears,
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exam, subject, tick, getState().status]);
+  }, [exam, subject, selectedYear, tick, bankStatus]);
 
   const meta = getExamMeta(exam);
   const durationSeconds = (meta?.durationMinutes ?? 30) * 60;
@@ -92,7 +114,7 @@ export function TestRunner() {
     const attempt = recordAttempt({
       exam,
       subject,
-      year: 0,
+      year: selectedYear ?? 0,
       startedAt,
       submittedAt,
       durationSeconds: Math.min(durationSeconds, Math.round((submittedAt - startedAt) / 1000)),
@@ -105,7 +127,13 @@ export function TestRunner() {
     navigate(`/results/${attempt.id}`);
   };
 
-  if (getState().status === 'loading' || getState().status === 'idle') {
+  const loaderState = getState();
+  if (
+    loaderState.status === 'loading' ||
+    loaderState.status === 'idle' ||
+    bankStatus === 'loading' ||
+    bankStatus === 'idle'
+  ) {
     return (
       <div className="card p-6 text-center text-neutral-500 dark:text-neutral-400">
         Loading questions…
@@ -139,10 +167,18 @@ export function TestRunner() {
 
   return (
     <div className="space-y-4">
+      {pooledFromOtherYears ? (
+        <div className="card p-3 border-l-4 border-l-amber-400 bg-amber-50 dark:bg-amber-950/30 text-sm text-amber-800 dark:text-amber-300">
+          We only have {getBank(exam, subject).filter((q) => q.year === selectedYear).length}{' '}
+          {selectedYear} question{getBank(exam, subject).filter((q) => q.year === selectedYear).length === 1 ? '' : 's'} so
+          far, so this session mixes in questions from other years.
+        </div>
+      ) : null}
       <header className="sticky top-14 z-20 -mx-4 px-4 py-2 bg-white/85 dark:bg-neutral-950/85 backdrop-blur border-b border-neutral-200 dark:border-neutral-800 flex items-center gap-3">
         <div className="min-w-0 flex-1">
           <div className="text-xs text-neutral-500 dark:text-neutral-400 truncate">
             {exam} · {subject}
+            {selectedYear != null ? ` · ${selectedYear}` : ' · All years'}
           </div>
           <div className="text-sm font-semibold">
             Question {index + 1} of {total}

@@ -56,14 +56,16 @@ export default defineConfig({
             },
           },
           {
-            // Serve the cached bank instantly and refresh in the background:
+            // Serve cached data files instantly and refresh in the background:
             // revisits (especially offline) must not wait on the network.
-            urlPattern: ({ url }) => url.pathname.endsWith('/data/questions.json'),
+            // Covers data/index.json and the per-subject data/banks/*.json.
+            urlPattern: ({ url }) =>
+              url.pathname.includes('/data/') && url.pathname.endsWith('.json'),
             handler: 'StaleWhileRevalidate',
             options: {
               cacheName: 'questions-cache',
               expiration: {
-                maxEntries: 4,
+                maxEntries: 16,
                 maxAgeSeconds: 60 * 60 * 24 * 30,
               },
             },

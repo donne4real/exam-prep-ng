@@ -1,23 +1,32 @@
-// Loads questions.json from the public folder and exposes typed accessors.
-// Handles the empty / loading state gracefully while the content agent
-// finishes generating the data file.
+// Loads the lightweight data index and per-subject question banks on demand.
+//
+// The old design fetched one monolithic questions.json (~6MB) before the app
+// was usable. Now a small index.json (~5KB) drives Home/Subjects/YearPicker,
+// and a subject's questions (~100-300KB) are only downloaded when the user
+// actually opens that subject — then cached by the service worker for
+// offline use.
 
 import type {
+  BankFile,
+  BankIndex,
   ExamMeta,
   ExamType,
   Question,
-  QuestionsFile,
-  SubjectMeta,
+  SubjectIndex,
 } from '../types/exam';
+
+export type BankStatus = 'idle' | 'loading' | 'ready' | 'error';
 
 interface LoaderState {
   status: 'idle' | 'loading' | 'ready' | 'error' | 'empty';
-  file: QuestionsFile | null;
+  index: BankIndex | null;
   error: string | null;
 }
 
-let cache: LoaderState = { status: 'idle', file: null, error: null };
+let cache: LoaderState = { status: 'idle', index: null, error: null };
 const listeners = new Set<() => void>();
+
+const banks = new Map<string, { status: BankStatus; questions: Question[] }>();
 
 function notify(): void {
   for (const cb of listeners) cb();
@@ -32,7 +41,7 @@ export function getState(): LoaderState {
   return cache;
 }
 
-const EMPTY_FILE: QuestionsFile = {
+const EMPTY_INDEX: BankIndex = {
   version: 0,
   exams: [
     {
@@ -58,54 +67,42 @@ const EMPTY_FILE: QuestionsFile = {
     },
   ],
   subjects: [],
-  questions: [],
 };
 
-export async function loadQuestions(force = false): Promise<LoaderState> {
-  if (!force && cache.status === 'ready') return cache;
-  if (!force && cache.status === 'empty') return cache;
+export async function loadIndex(force = false): Promise<LoaderState> {
+  if (!force && (cache.status === 'ready' || cache.status === 'empty')) return cache;
 
   cache = { ...cache, status: 'loading', error: null };
   notify();
 
   try {
-    const res = await fetch(`${import.meta.env.BASE_URL}data/questions.json`, {
+    const res = await fetch(`${import.meta.env.BASE_URL}data/index.json`, {
       cache: force ? 'no-store' : 'default',
     });
     if (!res.ok) {
       throw new Error(`HTTP ${res.status}`);
     }
-    const json = (await res.json()) as Partial<QuestionsFile>;
-    if (!json || !Array.isArray(json.exams) || !Array.isArray(json.questions)) {
-      cache = {
-        status: 'empty',
-        file: { ...EMPTY_FILE, subjects: json?.subjects ?? [] },
-        error: null,
-      };
+    const json = (await res.json()) as Partial<BankIndex>;
+    if (!json || !Array.isArray(json.exams) || !Array.isArray(json.subjects)) {
+      cache = { status: 'empty', index: EMPTY_INDEX, error: null };
       notify();
       return cache;
     }
-    const file: QuestionsFile = {
+    const index: BankIndex = {
       version: json.version ?? 1,
       generatedAt: json.generatedAt,
       exams: json.exams as ExamMeta[],
-      subjects: (json.subjects ?? []) as SubjectMeta[],
-      questions: json.questions as Question[],
+      subjects: json.subjects as SubjectIndex[],
     };
-    const isEmpty =
-      file.questions.length === 0 && file.subjects.length === 0;
-    cache = {
-      status: isEmpty ? 'empty' : 'ready',
-      file,
-      error: null,
-    };
+    const isEmpty = index.subjects.length === 0;
+    cache = { status: isEmpty ? 'empty' : 'ready', index, error: null };
     notify();
     return cache;
   } catch (err) {
     // Network failure or 404 — assume empty so the UI can show a friendly state.
     cache = {
       status: 'empty',
-      file: EMPTY_FILE,
+      index: EMPTY_INDEX,
       error: err instanceof Error ? err.message : 'Unknown error',
     };
     notify();
@@ -113,101 +110,86 @@ export async function loadQuestions(force = false): Promise<LoaderState> {
   }
 }
 
+function findSubjectIndex(exam: ExamType, subject: string): SubjectIndex | undefined {
+  return (cache.index?.subjects ?? []).find(
+    (s) => s.exam === exam && s.name === subject,
+  );
+}
+
+/** Fetch (once) and cache the questions for one subject. */
+export async function ensureBank(
+  exam: ExamType,
+  subject: string,
+): Promise<Question[]> {
+  await loadIndex();
+  const meta = findSubjectIndex(exam, subject);
+  if (!meta) return [];
+
+  const existing = banks.get(meta.id);
+  if (existing && (existing.status === 'ready' || existing.status === 'loading')) {
+    return existing.questions;
+  }
+
+  banks.set(meta.id, { status: 'loading', questions: [] });
+  notify();
+  try {
+    const res = await fetch(`${import.meta.env.BASE_URL}data/${meta.file}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = (await res.json()) as Partial<BankFile>;
+    const questions = Array.isArray(json.questions) ? (json.questions as Question[]) : [];
+    banks.set(meta.id, { status: 'ready', questions });
+    notify();
+    return questions;
+  } catch (err) {
+    cache = {
+      ...cache,
+      error: err instanceof Error ? err.message : 'Unknown error',
+    };
+    banks.set(meta.id, { status: 'error', questions: [] });
+    notify();
+    return [];
+  }
+}
+
+/** Sync snapshot of a subject's questions ([] until ensureBank resolves). */
+export function getBank(exam: ExamType, subject: string): Question[] {
+  const meta = findSubjectIndex(exam, subject);
+  if (!meta) return [];
+  return banks.get(meta.id)?.questions ?? [];
+}
+
+export function getBankStatus(exam: ExamType, subject: string): BankStatus {
+  const meta = findSubjectIndex(exam, subject);
+  if (!meta) return 'idle';
+  return banks.get(meta.id)?.status ?? 'idle';
+}
+
 export function listExams(): ExamMeta[] {
-  return cache.file?.exams ?? EMPTY_FILE.exams;
+  return cache.index?.exams ?? EMPTY_INDEX.exams;
 }
 
-export function listSubjects(exam: ExamType): SubjectMeta[] {
-  const all = cache.file?.subjects ?? [];
-  if (all.length > 0) {
-    return all.filter((s) => s.exam === exam);
-  }
-  // Fallback: infer subjects from questions when subjects list is missing.
-  const fromQuestions = new Set<string>();
-  for (const q of cache.file?.questions ?? []) {
-    if (q.exam === exam) fromQuestions.add(q.subject);
-  }
-  return Array.from(fromQuestions).sort().map((name) => ({
-    id: `${exam.toLowerCase()}-${name.toLowerCase().replace(/\s+/g, '-')}`,
-    exam,
-    name,
-    topics: [],
-  }));
+export function listSubjects(exam: ExamType): SubjectIndex[] {
+  return (cache.index?.subjects ?? []).filter((s) => s.exam === exam);
 }
 
+/**
+ * Years with questions in the bank for this subject, newest first.
+ * Unlike the old scaffold, this only reports years that actually exist.
+ */
 export function listYears(exam: ExamType, subject: string): number[] {
-  const set = new Set<number>();
-  for (const q of cache.file?.questions ?? []) {
-    if (q.exam === exam && q.subject === subject) set.add(q.year);
-  }
-  if (set.size === 0) {
-    // No data — provide the year scaffold so the UI still renders meaningfully.
-    const start = 2015;
-    const end = 2024;
-    for (let y = start; y <= end; y++) set.add(y);
-  }
-  return Array.from(set).sort((a, b) => b - a);
+  return findSubjectIndex(exam, subject)?.years ?? [];
 }
 
-export function countQuestions(
+export function countQuestionsForSubject(exam: ExamType, subject: string): number {
+  return findSubjectIndex(exam, subject)?.questionCount ?? 0;
+}
+
+export function countQuestionsForYear(
   exam: ExamType,
   subject: string,
   year: number,
 ): number {
-  return (cache.file?.questions ?? []).filter(
-    (q) => q.exam === exam && q.subject === subject && q.year === year,
-  ).length;
-}
-
-export function countEffectiveQuestions(
-  exam: ExamType,
-  subject: string,
-  year: number,
-): { count: number; pooled: boolean } {
-  const exact = (cache.file?.questions ?? []).filter(
-    (q) => q.exam === exam && q.subject === subject && q.year === year,
-  );
-  if (exact.length >= 30) {
-    return { count: exact.length, pooled: false };
-  }
-  const all = (cache.file?.questions ?? []).filter(
-    (q) => q.exam === exam && q.subject === subject,
-  );
-  if (all.length > exact.length) {
-    return { count: all.length, pooled: true };
-  }
-  return { count: exact.length, pooled: false };
-}
-
-export function getQuestions(
-  exam: ExamType,
-  subject: string,
-  year: number,
-): Question[] {
-  // First try the exact year
-  const exact = (cache.file?.questions ?? []).filter(
-    (q) => q.exam === exam && q.subject === subject && q.year === year,
-  );
-  if (exact.length >= 30) {
-    return exact;
-  }
-  // Fall back to all questions for this exam + subject (any year) for a fuller test
-  const all = (cache.file?.questions ?? []).filter(
-    (q) => q.exam === exam && q.subject === subject,
-  );
-  if (all.length > exact.length) {
-    return all;
-  }
-  return exact;
-}
-
-export function listQuestionsForSubject(
-  exam: ExamType,
-  subject: string,
-): Question[] {
-  return (cache.file?.questions ?? []).filter(
-    (q) => q.exam === exam && q.subject === subject,
-  );
+  return findSubjectIndex(exam, subject)?.yearCounts[String(year)] ?? 0;
 }
 
 export function getExamMeta(exam: ExamType): ExamMeta | undefined {

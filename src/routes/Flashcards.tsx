@@ -1,6 +1,13 @@
 ﻿import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { listSubjects, listQuestionsForSubject, getState, subscribe } from '../data/loader';
+import {
+  ensureBank,
+  getBank,
+  getBankStatus,
+  getState,
+  listSubjects,
+  subscribe,
+} from '../data/loader';
 import type { ExamType, Question } from '../types/exam';
 
 const DECK_SIZE = 20;
@@ -40,9 +47,12 @@ export function Flashcards() {
 function ExamDeckCard({ exam, tick }: { exam: ExamType; tick: number }) {
   const [expanded, setExpanded] = useState(false);
   const subjects = useMemo(() => listSubjects(exam), [exam, tick, getState().status]);
-  const allQ = useMemo(() => listQuestionsForSubject(exam, subjects[0]?.name ?? ''), [exam, tick, getState().status]);
+  const cardCount = useMemo(
+    () => subjects.reduce((sum, s) => sum + s.questionCount, 0),
+    [subjects],
+  );
 
-  if (subjects.length === 0 || allQ.length === 0) {
+  if (subjects.length === 0 || cardCount === 0) {
     return (
       <div className="card p-4">
         <div className="font-semibold">{exam}</div>
@@ -66,7 +76,7 @@ function ExamDeckCard({ exam, tick }: { exam: ExamType; tick: number }) {
             <path d="M6 9l6 6 6-6" />
           </svg>
         </div>
-        <p className="text-xs text-white/80 mt-1">{allQ.length} cards available</p>
+        <p className="text-xs text-white/80 mt-1">{cardCount} cards available</p>
       </div>
       {expanded ? (
         <div className="p-3 space-y-2">
@@ -108,8 +118,9 @@ export function FlashcardDeck() {
   }
   const [tick, setTick] = useState(0);
   useEffect(() => { const unsub = subscribe(() => setTick(t => t + 1)); return unsub; }, []);
+  useEffect(() => { void ensureBank(exam, subject); }, [exam, subject]);
 
-  const all = useMemo(() => listQuestionsForSubject(exam, subject), [exam, subject, tick, getState().status]);
+  const all = useMemo(() => getBank(exam, subject), [exam, subject, tick, getBankStatus(exam, subject)]);
   const deck = useMemo(() => shuffle(all).slice(0, Math.min(DECK_SIZE, all.length)), [exam, subject, tick]);
 
   const [index, setIndex] = useState(0);
