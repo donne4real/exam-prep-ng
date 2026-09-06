@@ -11,8 +11,9 @@ to work offline once the user installs it.
 
 ## Features
 
-- **6 routes**: Home, Subjects, Years, Test Runner, Results, Dashboard
-- **PWA install** with custom install banner (`InstallPrompt`)
+- **8 routes**: Home, Subjects, Years, Test Runner, Results, Dashboard, Flashcards, Languages
+- **Real past questions only** — every question carries a source label (see below)
+- **PWA install** with custom install banner (`InstallPrompt`) and generated icons
 - **Offline support** via Workbox service worker (cache-first for assets,
   stale-while-revalidate for `data/questions.json`)
 - **Dark mode** — auto / light / dark, persisted in `localStorage`
@@ -111,6 +112,44 @@ npm run preview
 
 ## Question data
 
+### Content policy
+
+The bank ships **real past questions only**. Every question carries a
+`source` label (and a `sourceUrl` where available):
+
+| Source                        | Exam | Subjects                                   |
+| ----------------------------- | ---- | ------------------------------------------ |
+| TestDriller (scraped)         | BECE | Agric Science, Civic Education, History, Home Economics, Mathematics |
+| SchoolNGR.com (scraped)       | BECE | Basic Science                              |
+| EduPadi (scraped)             | JAMB | English Language, Mathematics              |
+
+Deliberately **excluded**:
+
+- `data/extracted/bece_*` — Kuulchat.com **Ghana** BECE papers (kept for a
+  possible Ghana edition; not Nigerian papers).
+- `data/extracted/ms_*` — MySchool.ng forum-recalled questions (answer keys
+  unverified).
+- `data/extracted/curriculum_*` — AI-generated practice items. Generated
+  content may return later, but only clearly labelled as practice, never
+  as past questions.
+
+### Pipeline
+
+```bash
+# 1. Rebuild public/data/questions.json from the real extracted sources
+python scripts/build_bank.py
+
+# 2. Validate (also runs in CI — the deploy fails on any error)
+python scripts/validate_questions.py
+
+# 3. Regenerate PWA icons after changing the icon design
+python scripts/generate_icons.py
+```
+
+The validator enforces: unique ids, valid answer keys, no blank prompts or
+options, no embedded option-label prefixes ("A) …"), no filler explanations,
+no duplicate questions within an exam+subject, and no cross-exam duplicates.
+
 The app expects `public/data/questions.json` with this shape:
 
 ```ts
@@ -137,14 +176,16 @@ On Chrome/Edge the `InstallPrompt` component listens for
 ## Offline behavior
 
 - HTML/CSS/JS/fonts/images: cached on first load (precache manifest).
-- `data/questions.json`: `StaleWhileRevalidate` (uses cached version when
-  offline, fetches a fresh copy when online).
+- `data/questions.json`: `StaleWhileRevalidate` (the cached bank is served
+  instantly — essential offline — and refreshed in the background when a
+  connection is available).
 - App shell navigation: `NetworkFirst` so the latest HTML is preferred when
   online, but cached when offline.
 
 ## Storage
 
-- Progress (attempts): `localStorage` key `exam-prep-ng-progress`
+- Progress (attempts): `localStorage` key `exam-prep-ng-progress`, capped at
+  the 50 most recent attempts
 - Settings (theme, last exam, install prompt dismissal): `exam-prep-ng-settings`
 
 Both keys can be cleared from the browser devtools if you need to reset state.

@@ -23,10 +23,10 @@ export function Home() {
         <div className="flex flex-col gap-3 max-w-2xl">
           <span className="pill bg-white/15 text-white w-fit">Nigerian exam prep</span>
           <h1 className="text-3xl sm:text-4xl font-bold leading-tight">
-            Practice past questions for BECE, NECO and JAMB.
+            Practice real past questions for BECE and JAMB.
           </h1>
           <p className="text-white/85 text-base sm:text-lg">
-            Free, offline-first, built for low-end Android phones. Pick an exam below to begin.
+            Free, offline-first, built for low-end Android phones. WAEC and NECO banks are on the way — pick an exam below to begin.
           </p>
           <div className="flex flex-wrap gap-3 pt-2">
             <a

@@ -26,3 +26,17 @@ npm-debug.log*
 # Cache
 .cache/
 
+
+# Local data pipeline (raw scrapes + per-source extracts). Only the
+# merged public/data/questions.json is committed; rebuild it with
+# scripts/build_bank.py.
+data/
+
+# Python
+__pycache__/
+*.pyc
+
+# Local build artifacts
+artifact*.zip
+artifact*.tar
+artifact_extracted/

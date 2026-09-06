@@ -18,8 +18,10 @@ export default defineConfig({
         background_color: '#ffffff',
         display: 'standalone',
         orientation: 'portrait',
-        scope: '/',
-        start_url: '/',
+        // Must match `base` — the app is served from /exam-prep-ng/ on
+        // GitHub Pages. A scope wider than the SW's own path breaks installs.
+        scope: '/exam-prep-ng/',
+        start_url: '/exam-prep-ng/',
         icons: [
           {
             src: 'pwa-192x192.png',
@@ -54,11 +56,12 @@ export default defineConfig({
             },
           },
           {
+            // Serve the cached bank instantly and refresh in the background:
+            // revisits (especially offline) must not wait on the network.
             urlPattern: ({ url }) => url.pathname.endsWith('/data/questions.json'),
-            handler: 'NetworkFirst',
+            handler: 'StaleWhileRevalidate',
             options: {
               cacheName: 'questions-cache',
-              networkTimeoutSeconds: 5,
               expiration: {
                 maxEntries: 4,
                 maxAgeSeconds: 60 * 60 * 24 * 30,

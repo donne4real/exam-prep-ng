@@ -63,7 +63,11 @@ export const useProgressStore = create<ProgressState>()(
           percentage,
           gradeBand: gradeFor(percentage),
         };
-        set((state) => ({ attempts: [attempt, ...state.attempts] }));
+        set((state) => ({
+          // localStorage is ~5MB; unbounded growth would eventually break
+          // persistence. The most recent attempts are the useful ones.
+          attempts: [attempt, ...state.attempts].slice(0, 50),
+        }));
         return attempt;
       },
 
