@@ -194,6 +194,80 @@ TOPIC_MAPS: dict[tuple[str, str], list[tuple[str, re.Pattern]]] = {
         ("Grammar", _rx(r"\btense\b|\bverb\b|\bnoun\b|\bpronoun\b|\bpreposition\b|\barticle\b|\bconcord\b|\bsubject-?verb\b|\badverb\b|\badjective\b|\bplural\b|\bsingular\b|\bclause\b|\bphrase\b|\bpassive\b|\bactive voice\b|\breported speech\b|\bdirect speech\b|\bquestion tag\b|\bmodal\b|\bconditional\b")),
         ("Sentence Structure & Punctuation", _rx(r"\bsentence (type|structure)\b|\bsimple sentence\b|\bcompound sentence\b|\bcomplex sentence\b|\bpunctuation\b|\bsemicolon\b|\bcomma\b|\bfull stop\b|\bspelling\b|\barrange.*sentence|\bdangling\b|\bcleft\b")),
     ],
+    # ── WAEC SSCE sciences & social sciences ─────────────────────────────
+    ("WAEC", "Biology"): [
+        ("Health & Diseases", _rx(r"\bdisease\b|\bmalaria\b|\bplasmodium\b|\bpathogen\b|\bimmun|\bvaccin\b|\bantibod|\bantigen\b|\bAIDS\b|\bHIV\b|\bcholera\b|\btyphoid\b|\btuberculosis\b|\bmeasles\b|\bringworm\b|\bhygiene\b|\bdrug abuse\b|\bmosquito\b")),
+        ("Genetics & Heredity", _rx(r"\bgene\b|\bgenetic\b|\bchromosome\b|\bDNA\b|\bMendel\b|\bheredit|\ballel|\bdominan|\brecessiv|\bgenotype\b|\bphenotype\b|\bsickle cell\b|\bhaemophilia\b|\bcolour blindness\b|\bsex-linked\b|\bmutation\b|\bhybrid\b|\bsegregation\b|\btest cross\b")),
+        ("Evolution & Adaptation", _rx(r"\bevolut|\badapt(ation|ed)\b|\bnatural selection\b|\bLamarck\b|\bDarwin\b|\bspeciation\b|\bfossil\b|\bvariation\b|\bprotective coloration\b|\bmimicry\b")),
+        ("Ecology & Ecosystem", _rx(r"\becolog|\becosystem\b|\bhabitat\b|\bniche\b|\bfood chain\b|\bfood web\b|\btrophic\b|\bpyramid of\b|\bsymbio|\bcommensal|\bmutualis|\bparasitism\b|\bpredat|\bconservation\b|\bpollution\b|\bdeforestation\b|\bbiome\b|\bsavanna\b|\bpopulation (growth|density|census)\b")),
+        ("Nervous & Hormonal Control", _rx(r"\bneurone\b|\bnerve\b|\breflex\b|\bbrain\b|\bspinal cord\b|\bsynapse\b|\binsulin\b|\badrenal|\bhormone\b|\breceptor\b|\beye\b|\bear\b|\bmuscle contraction\b|\bcoordination\b")),
+        ("Locomotion & Support", _rx(r"\bskeleton\b|\bbone\b|\bjoint\b|\bmuscle\b|\blocomot|\bflagell|\bcilia\b|\bpseudopod|\bvertebral\b|\bappendage\b|\bribcage\b")),
+        ("Reproduction", _rx(r"\breproduct|\bgamete\b|\bsperm\b|\bovum\b|\bpollinat|\bfertiliz|\bseed\b|\bgerminat|\bmenstrual\b|\bpregnan|\bplacenta\b|\bovulat|\bconjugat|\bspore\b|\bbinary fission\b|\bbudding\b|\bflower\b|\bfruit\b|\bpuberty\b")),
+        ("Excretion", _rx(r"\bexcret|\bkidney\b|\bnephron\b|\bliver\b|\burea\b|\burine\b|\bsweat\b|\bflame cell\b|\bammontelism\b|\buricotelism\b")),
+        ("Respiration & Gaseous Exchange", _rx(r"\brespirat|\bglycolysis\b|\bkrebs\b|\banaerobic\b|\baerobic\b|\bgaseous exchange\b|\blung\b|\btrachea\b|\bbreathing\b|\bstomata\b|\blenticel\b")),
+        ("Transport Systems", _rx(r"\bheart\b|\bblood\b|\bcirculat|\bvein\b|\barte|\bcapillar|\btranspiration\b|\btranslocation\b|\bxylem\b|\bphloem\b|\broot (hair|pressure)\b|\blymph\b|\bplatelet\b|\bplasma\b|\bmycorrhiza\b")),
+        ("Nutrition", _rx(r"\bnutrition\b|\bphotosynthes|\benzyme\b|\bdigest|\bfood (class|test)\b|\bcarbohydrate\b|\bprotein\b|\bfat\b|\bvitamin\b|\bmineral salt\b|\bbalanced diet\b|\bautotroph|\bheterotroph|\bsaprophyt|\bholozoic\b|\bfeeding\b|\bmouth\b|\bdentition\b")),
+        ("Cell Structure & Organisation", _rx(r"\bcell\b|\borganelle\b|\bmitochondr|\bnucleus\b|\bchloroplast\b|\bmembrane\b|\btissue\b|\bplasmolysis\b|\bosmosis\b|\bdiffusion\b|\bprokaryot|\beukaryot|\bmicroscope\b|\bvacuole\b|\bribosome\b")),
+        ("Classification & Diversity", _rx(r"\bclassif|\bkingdom\b|\bphylum\b|\bspecies\b|\bgenus\b|\bbinomial\b|\bvertebrat|\binvertebrat|\bmammal\b|\breptile\b|\bamphibian\b|\binsect\b|\bfungi\b|\bbacterium\b|\bbacteria\b|\bvirus\b|\bprotozoa\b|\balgae\b|\bfern\b|\bmoss\b|\bbryophyt|\bpteridophyt")),
+    ],
+    ("WAEC", "Chemistry"): [
+        ("Atomic Structure & Periodicity", _rx(r"\batom\b|\bproton\b|\bneutron\b|\belectron (shell|configuration|arrangement)\b|\batomic number\b|\bmass number\b|\bisotope\b|\bperiodic (table|law)\b|\btransition element\b|\bionization energy\b|\batomic radius\b|\belectronegativ|\bgroup (1|2|7|17|18|0)\b")),
+        ("Chemical Bonding", _rx(r"\bbond\b|\bionic\b|\bcovalent\b|\bmetallic bond\b|\bdative\b|\bhydrogen bond\b|\bvan der Waals\b|\blattice\b|\bmolecule (shape|shape)\b|\bVSEPR\b|\bintermolecular\b")),
+        ("Electrochemistry & Redox", _rx(r"\belectroly|\belectrode\b|\banode\b|\bcathode\b|\belectroplating\b|\bFaraday\b|\bcorrosion\b|\brust\b|\boxidation\b|\breduction\b|\bredox\b|\boxidation number\b|\bdisplacement\b|\bhalf-cell\b")),
+        ("Acids, Bases & Salts", _rx(r"\bacid\b|\bacidic\b|\bbase\b|\balkali\b|\bsalt\b|\bpH\b|\bneutrali[sz]\b|\btitration\b|\bhydrolysis\b|\bbuffer\b|\bindicator\b|\bdeliquescent\b|\befflorescent\b")),
+        ("Stoichiometry & Mole Concept", _rx(r"\bmole\b|\bAvogadro\b|\bmolar (mass|volume|solution)\b|\bstoichiometr|\bempirical formula\b|\bmolecular formula\b|\bpercentage (composition|purity)\b|\byield\b|\blimiting reactant\b|\bstandard solution\b")),
+        ("States of Matter & Gas Laws", _rx(r"\bgas law|\bBoyle\b|\bCharles\b|\bideal gas\b|\bstates of matter\b|\bmelting\b|\bboiling\b|\bsublimation\b|\beffusion\b|\bkinetic theory\b|\bvapour\b|\bdiffusion\b|\bpressure\b")),
+        ("Energy, Rates & Equilibrium", _rx(r"\bexothermic\b|\bendothermic\b|\benthalpy\b|\bactivation energy\b|\brate of reaction\b|\bcatalyst\b|\bequilibrium\b|\bLe Chatelier\b|\breversible reaction\b|\bcollision theory\b")),
+        ("Organic Chemistry", _rx(r"\balkane\b|\balkene\b|\balkyne\b|\balcohol\b|\balkanol\b|\balkanoic\b|\bester\b|\bether\b|\baldehyde\b|\bketone\b|\bhydrocarbon\b|\bhomologous series\b|\bisomer\b|\bcracking\b|\bpolymer\b|\bfermentation\b|\bsaponification\b|\bbenzene\b|\bpetroleum\b|\bcrude oil\b|\bsoap\b|\bfat and oil\b")),
+        ("Metals & Their Compounds", _rx(r"\bmetal\b|\balloy\b|\bextraction\b|\bblast furnace\b|\bore\b|\bsodium\b|\bpotassium\b|\bcalcium\b|\baluminium\b|\biron\b|\bcopper\b|\bzinc\b|\btin\b|\blead\b|\bsilver\b|\bgold\b|\blimestone\b|\bcement\b|\bglass\b|\braw material")),
+        ("Non-metals & Their Compounds", _rx(r"\bhydrogen\b|\boxygen\b|\bchlorine\b|\bnitrogen\b|\bsulphur\b|\bsulfur\b|\bammonia\b|\bwater\b|\bair\b|\bhalogen\b|\bnitrogen cycle\b|\binert gas\b|\bnoble gas\b|\bcarbon (monoxide|dioxide)\b")),
+        ("Solutions & Solubility", _rx(r"\bsolution\b|\bsolubility\b|\bsaturated\b|\bconcentration\b|\bsolvent\b|\bsolute\b|\bcolloid\b|\bsuspension\b|\bhard water\b|\bwater treatment\b")),
+        ("Laboratory Practice & Analysis", _rx(r"\blaboratory\b|\bapparatus\b|\bburette\b|\bpipette\b|\bflame test\b|\btest for\b|\bqualitative analysis\b|\bprecipitate\b|\bdrying\b|\bfunnel\b")),
+    ],
+    ("WAEC", "Physics"): [
+        ("Measurement & Units", _rx(r"\bmeasurement\b|\bunit\b|\bdimension\b|\bvernier\b|\bmicrometer screw\b|\bpendulum\b|\baccuracy\b|\bprecision\b|\bsignificant figure\b|\bstopwatch\b")),
+        ("Modern Physics", _rx(r"\bradioact|\bnuclear\b|\bfusion\b|\bfission\b|\bphotoelectric\b|\bx-ray\b|\bquantum\b|\bhalf-life\b|\benergy level\b|\bnucleus\b|\bradiation\b")),
+        ("Electronics", _rx(r"\bsemiconductor\b|\bdiode\b|\btransistor\b|\brectif|\bamplifier\b|\blogic gate\b|\bthermionic\b|\bvalve\b|\bnpn\b|\bpnp\b")),
+        ("Magnetism & Electromagnetism", _rx(r"\bmagnet\b|\bmagnetic field\b|\belectromagnet\b|\binduction\b|\btransformer\b|\bgenerator\b|\bdynamo\b|\bmotor\b|\bsolenoid\b|\bcompass\b|\bLenz\b|\bFleming\b")),
+        ("Electricity", _rx(r"\bcurrent\b|\bvoltage\b|\bpotential difference\b|\bresistance\b|\bOhm\b|\bcircuit\b|\bseries\b|\bparallel\b|\bammeter\b|\bvoltmeter\b|\bbattery\b|\be\.m\.f\b|\bresistivity\b|\bcapacitor\b|\bcharge\b|\bfuse\b|\bearth(ing)?\b")),
+        ("Waves, Light & Sound", _rx(r"\bwave\b|\blight\b|\breflection\b|\brefraction\b|\blens\b|\bmirror\b|\bimage\b|\bfocal\b|\bdispersion\b|\bspectrum\b|\bcolour\b|\bsound\b|\becho\b|\bresonance\b|\bvibration\b|\bfrequency\b|\bpitch\b|\bdoppler\b|\binterference\b|\bdiffraction\b|\bwavelength\b")),
+        ("Heat & Temperature", _rx(r"\bheat\b|\btemperature\b|\bthermometer\b|\bexpansion\b|\bspecific heat\b|\blatent heat\b|\bconduction\b|\bconvection\b|\bradiation\b|\bcelsius\b|\bkelvin\b|\bcalorimet")),
+        ("Pressure & Density", _rx(r"\bpressure\b|\bdensity\b|\bupthrust\b|\bArchimedes\b|\bfloat|\bPascal\b|\bmanometer\b|\bbarometer\b|\bhydraulic\b|\batmospheric pressure\b|\bboyle")),
+        ("Gravitation & Space", _rx(r"\bgravitat|\bweightlessness\b|\bsatellite\b|\borbit\b|\bescape velocity\b|\bmoon\b|\bplanet\b")),
+        ("Circular Motion", _rx(r"\bcircular motion\b|\bcentripetal\b|\bcentrifugal\b|\bangular (velocity|speed|acceleration)\b|\bradian\b")),
+        ("Force & Dynamics", _rx(r"\bforce\b|\bNewton\b|\bfriction\b|\bmoment\b|\bmomentum\b|\bimpulse\b|\bcollision\b|\bequilibrium\b|\bresultant\b|\bcentre of gravity\b|\bstability\b|\bacceleration\b")),
+        ("Motion & Kinematics", _rx(r"\bmotion\b|\bvelocity\b|\bdisplacement\b|\bspeed\b|\bprojectile\b|\bfree fall\b|\bretardation\b|\buniform\b")),
+        ("Work, Energy & Power & Machines", _rx(r"\bwork\b|\benergy\b|\bpower\b|\bkinetic\b|\bpotential\b|\bmachine\b|\befficiency\b|\blever\b|\bpulley\b|\binclined plane\b|\bscrew\b|\bwheel\b|\bgear\b|\bvelocity ratio\b|\bmechanical advantage\b")),
+    ],
+    ("WAEC", "Economics"): [
+        ("International Trade & Finance", _rx(r"\btrade\b|\bimport\b|\bexport\b|\bbalance of (payment|trade)\b|\bcomparative advantage\b|\babsolute advantage\b|\btariff\b|\bquota\b|\bprotection|\bdevaluation\b|\bexchange rate\b|\bforeign exchange\b|\bIMF\b|\bWorld Bank\b|\bECOWAS\b|\bglobali[sz]ation\b|\bterms of trade\b")),
+        ("Money, Banking & Finance", _rx(r"\bmoney\b|\bbank\b|\bcentral bank\b|\bcommercial bank\b|\bmonetary policy\b|\bcredit\b|\binflation\b|\bdeflation\b|\bcurrency\b|\bnaira\b|\bfinancial institution\b|\bstock exchange\b|\bmoney market\b|\bcapital market\b|\bnote issuance\b")),
+        ("Public Finance & Taxation", _rx(r"\btaxation\b|\btax\b|\bpublic finance\b|\bbudget\b|\bfiscal policy\b|\bgovernment expenditure\b|\brevenue\b|\bnational debt\b|\bsubsid\b|\bdeficit\b")),
+        ("National Income & Accounting", _rx(r"\bnational income\b|\bGDP\b|\bGNP\b|\bper capita\b|\bincome accounting\b|\bcircular flow\b|\baggregate demand\b|\baggregate supply\b|\bstandard of living\b")),
+        ("Population, Labour & Development", _rx(r"\bpopulation\b|\bcensus\b|\bgrowth rate\b|\bmigration\b|\bunemployment\b|\bemployment\b|\bdevelopment\b|\bunderdevelopment\b|\bpoverty\b|\bhuman capital\b|\boverpopulation\b|\blabour force\b")),
+        ("Market Structures", _rx(r"\bperfect competition\b|\bmonopoly\b|\boligopoly\b|\bmonopolistic\b|\bmarket structure\b|\bprice (discrimination|leader|maker|taker)\b")),
+        ("Business Organisations", _rx(r"\bsole (proprietorship|trader)\b|\bpartnership\b|\bjoint stock\b|\bcompany\b|\bpublic (corporation|enterprise)\b|\bprivati[sz]\b|\bcooperative\b|\bbusiness organisation\b|\bshareholder\b")),
+        ("Agriculture & Industry in Nigeria", _rx(r"\bagricultur|\bcocoa\b|\bgroundnut\b|\bcrude oil\b|\bpetroleum\b|\bmining\b|\bmanufactur|\bSME\b|\bindustriali[sz]\b|\bNNPC\b|\bresource curse\b")),
+        ("Demand, Supply & Price", _rx(r"\bdemand\b|\bsupply\b|\bequilibrium price\b|\bquantity demanded\b|\bquantity supplied\b|\bmarket price\b|\bprice mechanism\b|\bcommodity\b")),
+        ("Elasticity", _rx(r"\belasticit|\binelastic\b")),
+        ("Theory of Consumer Behaviour", _rx(r"\butility\b|\bindifference curve\b|\bconsumer surplus\b|\bbudget line\b|\bmarginal utility\b|\bconsumer behaviour\b|\bconsumer sovereignty\b")),
+        ("Production, Cost & Factors", _rx(r"\bproduction\b|\bcost\b|\breturns to scale\b|\beconomies of scale\b|\bdiseconomies\b|\bproduction possibility\b|\bproductivity\b|\bfactor of production\b|\bland\b|\blabour\b|\bcapital\b|\bentrepreneur\b|\bwage\b|\brent\b|\binterest\b|\bprofit\b|\btrade union\b|\bdivision of labour\b|\bspeciali[sz]ation\b")),
+        ("Economic Systems & Planning", _rx(r"\beconomic system\b|\bcapitalism\b|\bsocialism\b|\bmixed economy\b|\bcommand economy\b|\bfree enterprise\b|\blaissez|\beconomic planning\b|\brolling plan\b|\bprice control\b")),
+        ("Basic Economic Concepts", _rx(r"\bscarcity\b|\bchoice\b|\bopportunity cost\b|\bscale of preference\b|\bwants\b|\bresources\b|\beconomics as a\b|\bdefinition of economics\b|\bbasic economic\b")),
+    ],
+    ("WAEC", "Government"): [
+        ("Pressure Groups & Public Opinion", _rx(r"\bpressure group\b|\binterest group\b|\blobby|\bpublic opinion\b|\bpropaganda\b|\bmass media\b|\bcivil society\b|\bNLC\b|\bNMA\b|\bASUU\b")),
+        ("Political Parties & Elections", _rx(r"\bpolitical party\b|\bparty system\b|\bone-?party\b|\btwo-?party\b|\bmulti-?party\b|\belection\b|\belectoral (commission|act|malpractice)\b|\bINEC\b|\bFEDECO\b|\bNECON\b|\bfranchise\b|\bsuffrage\b|\bballot\b|\brigging\b|\bcampaign\b|\bprimaries\b|\bconstituency\b")),
+        ("Foreign Policy & International Relations", _rx(r"\bforeign policy\b|\bcentrepiece\b|\bnon-?alignment\b|\bECOWAS\b|\bOAU\b|\bAfrican Union\b|\b\bUN\b|\bUNO\b|\bCommonwealth\b|\bdiplomacy\b|\bdiplomatic\b|\binternational relation\b|\btreaty\b|\bregional integration\b|\bAfrocentric")),
+        ("Nigerian Political History", _rx(r"\bFirst Republic\b|\bSecond Republic\b|\bThird Republic\b|\bmilitary (rule|regime|government)\b|\bcoup\b|\bcivil war\b|\bBiafra\b|\bNCNC\b|\bNPC\b|\b\bAG\b|\bNPN\b|\bUPN\b|\bNPP\b|\bPRP\b|\bGNPP\b|\bSDP\b|\bNRC\b|\btransition\b|\bhandover\b|\bAguiyi\b|\bGowon\b|\bMurtala\b|\bObasanjo\b|\bShagari\b|\bBuhari\b|\bBabangida\b|\bAbacha\b|\bAbdulsalami\b")),
+        ("Colonialism & Nationalism", _rx(r"\bcolonial|\bindirect rule\b|\bassimilation\b|\bnationalism\b|\bnationalist\b|\bindependence\b|\bamalgamation\b|\bprotectorate\b|\bself-?government\b|\bdecoli[sz]|\bMacaulay\b|\bAzikiwe\b|\bAwolowo\b|\bAhmadu Bello\b|\bLugard\b|\bClifford\b|\bMacpherson\b|\bRichards\b|\bLyttleton\b")),
+        ("Constitutions & Constitutional Development", _rx(r"\bconstitution\b|\bRichard\b|\bMacpherson\b|\bClifford\b|\bLyttleton\b|\bindependence constitution\b|\brepublican constitution\b|\b1979\b|\b1999\b|\bamendment\b|\bwritten (constitution)?\b|\bunwritten\b|\brigid\b|\bflexible\b")),
+        ("Organs of Government", _rx(r"\blegislature\b|\bexecutive\b|\bjudiciary\b|\bparliament\b|\bcongress\b|\bcourt\b|\bsupreme court\b|\blegislation\b|\bbill\b|\bveto\b|\bimpeach|\bjudicial review\b|\bseparation of powers\b|\bchecks and balances\b|\bcabinet\b|\bquorum\b")),
+        ("Federalism & Power Allocation", _rx(r"\bfederalism\b|\bfederal (system|character|government)\b|\bunitary\b|\bconfederation\b|\bdevolution\b|\brevenue allocation\b|\bstate creation\b|\bexclusive list\b|\bconcurrent list\b|\bresidual\b|\blocal government\b|\bFCT\b")),
+        ("Citizenship & Rights", _rx(r"\bcitizenship\b|\bnationali[sz]ation\b|\balien\b|\bfundamental human rights\b|\brights\b|\bobligation\b|\bdual citizenship\b|\brule of law\b|\bconstitutionalsim\b|\bconstitutionality\b")),
+        ("Public Administration & Civil Service", _rx(r"\bcivil service\b|\bcivil servant\b|\bpublic (corporation|service|office)\b|\bparastatal\b|\bbureaucra|\bombudsman\b|\bcommission\b|\baccountability\b|\bprobity\b")),
+        ("Basic Political Concepts", _rx(r"\bstate\b|\bsovereignty\b|\bpower\b|\bauthority\b|\blegitimacy\b|\bpolitical culture\b|\bpolitical sociali[sz]ation\b|\bdemocracy\b|\bgovernment\b|\bnation\b|\bsociety\b|\bideology\b|\bcapitalism\b|\bsocialism\b|\bcommunism\b|\bfascism\b|\bwelfare state\b|\bliberali[sz]|")),
+    ],
 }
 
 COMPREHENSION_MIN_LEN = 600  # JAMB English passage prompts exceed this
@@ -421,6 +495,47 @@ def load_td(bank: Bank) -> None:
         print(f"  {stem}: {len(items)} items -> {added} kept")
 
 
+# Questions that reference a diagram/figure we cannot ship are unanswerable
+# in text-only form ("the part labelled I is..."). Dropped at build time.
+DIAGRAM_RE = re.compile(r"\b(labelled|labeled)\b|\bdiagram\b|\bfigure\b", re.IGNORECASE)
+
+
+def load_tdw(bank: Bank) -> None:
+    """TestDriller WAEC files: tdw_{subject}_{year}.json, one paper each."""
+    paths = sorted(EXTRACTED.glob("tdw_*.json"))
+    if not paths:
+        return
+    for path in paths:
+        m = re.match(r"tdw_(.+)_(\d{4})\.json$", path.name)
+        if not m:
+            continue
+        subject = SUBJECT_NAMES.get(m.group(1), m.group(1).replace("-", " ").title())
+        with open(path, encoding="utf-8") as fh:
+            items = json.load(fh)
+        added = 0
+        for item in items:
+            if DIAGRAM_RE.search(item.get("prompt") or ""):
+                bank.dropped["diagram-dependent"] = bank.dropped.get("diagram-dependent", 0) + 1
+                continue
+            raw_opts = item.get("options") or []
+            options = [{"id": o["id"], "text": strip_prefix(o.get("text") or "")} for o in raw_opts if isinstance(o, dict)]
+            ok = bank.add(
+                exam="WAEC",
+                subject=subject,
+                year=item.get("year") or int(m.group(2)),
+                prompt=item.get("prompt"),
+                options=options,
+                correct_option_id=(item.get("correctOptionId") or "").lower(),
+                number=item.get("questionNumber") or added + 1,
+                explanation=item.get("explanation"),
+                source="TestDriller WAEC past questions",
+                source_url=item.get("sourceUrl"),
+            )
+            added += ok
+    total = sum(1 for p in paths)
+    print(f"  tdw_*: {total} files -> {total} papers processed")
+
+
 def load_sng(bank: Bank) -> None:
     """SchoolNGR format: lettered options + correctAnswer letter + year."""
     path = EXTRACTED / "sng_bst.json"
@@ -556,6 +671,7 @@ def main() -> int:
     bank = Bank()
     print("Loading real past-question sources:")
     load_td(bank)
+    load_tdw(bank)
     load_sng(bank)
     load_edupadi_jamb(bank)
 
