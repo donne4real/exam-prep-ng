@@ -1,6 +1,11 @@
+import { createRequire } from 'node:module';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { VitePWA } from 'vite-plugin-pwa';
+
+// Load the plugin's CJS build on purpose: its ESM build cannot require() the
+// CJS-only workbox-build ("Dynamic require of 'workbox-build' is not
+// supported"), which broke `vite build` on Node >= 22.
+const { VitePWA } = createRequire(import.meta.url)('vite-plugin-pwa') as typeof import('vite-plugin-pwa');
 
 // GitHub Pages serves the site under /exam-prep-ng/; Netlify (and most
 // other hosts) serve it at the domain root. Netlify sets NETLIFY=true in

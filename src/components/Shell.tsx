@@ -80,7 +80,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
       {!minimal ? (
         <footer className="border-t border-neutral-200 dark:border-neutral-800 py-6 text-center text-xs text-neutral-500 dark:text-neutral-400">
-          <div>ExamPrep NG · Practice for BECE, NECO, JAMB</div>
+          <div>ExamPrep NG · Practice for BECE, NECO, WAEC, JAMB</div>
           <div className="mt-1">Works offline once installed.</div>
         </footer>
       ) : null}
