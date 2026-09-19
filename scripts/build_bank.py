@@ -49,9 +49,12 @@ LEGACY_MONOLITH = DATA_DIR / "questions.json"
 SUBJECT_NAMES = {
     "agricultural-science": "Agricultural Science",
     "basic-science": "Basic Science",
+    "basic-science-and-technology": "Basic Science",
     "biology": "Biology",
     "business-studies": "Business Studies",
     "chemistry": "Chemistry",
+    "christian-religious-studies": "Christian Religious Studies",
+    "christian-religious-studies-crs": "Christian Religious Studies",
     "civic-education": "Civic Education",
     "commerce": "Commerce",
     "computer-studies": "Computer Studies",
@@ -65,10 +68,13 @@ SUBJECT_NAMES = {
     "history": "History",
     "home-economics": "Home Economics",
     "irk": "Islamic Religious Knowledge",
+    "islamic-religious-studies-irs": "Islamic Religious Studies",
     "literature-in-english": "Literature-in-English",
+    "marketing": "Marketing",
     "mathematics": "Mathematics",
     "national-value-education": "National Value Education",
     "physics": "Physics",
+    "pre-vocational-studies": "Pre-Vocational Studies",
 }
 
 # Generic fallback topics from the old keyword tagger; not useful for the
@@ -334,6 +340,61 @@ NATIONAL_VALUE_EDUCATION_TOPICS = [
     ("Health, Drugs & Social Vices", _rx(r"\bdrug\b|\balcohol\b|\bsubstance\b|\bHIV\b|\bhealth\b|\bhygiene\b|\bcorruption\b|\bexamination malpractice\b|\bprostitution\b")),
 ]
 
+CRS_TOPICS = [
+    ("Old Testament Narratives", _rx(r"\bGenesis\b|\bExodus\b|\bCreation\b|\bAdam and Eve\b|\bNoah\b|\bAbraham\b|\bMoses\b|\bJoseph\b|\bDavid\b|\bSaul\b|\bSolomon\b|\bIsraelites?\b|\bEgypt\b|\bpatriarch|\bJonah\b|\bElijah\b|\bElisha\b|\bprophet")),
+    ("Life & Ministry of Jesus", _rx(r"\bJesus\b|\bChrist('s)?\b|\bNativity\b|\bbaptism of\b|\btemptation\b|\bdisciples?\b|\bSermon on the Mount\b|\bcrucifi|\bresurrection\b|\bascension\b|\bBethlehem\b|\bNazareth\b|\bCalvary\b")),
+    ("Parables & Miracles", _rx(r"\bparable\b|\bsower\b|\bprodigal son\b|\bgood Samaritan\b|\bmiracle(s)? of\b|\bturned water\b|\bfeeding the (five|5000)\b|\blazarus\b|\bblind man\b|\bstorms? (calmed|stilled)\b")),
+    ("Early Church & Apostles", _rx(r"\bPentecost\b|\bPaul\b|\bPeter\b|\bapostle\b|\bearly church\b|\bmissionary journey\b|\bStephen\b|\bCornelius\b|\bAntioch\b|\bconversion of\b")),
+    ("Ethics & Moral Lessons", _rx(r"\bmoral\b|\bvirtue\b|\bsin\b|\bforgiveness\b|\bobedience\b|\bfaith\b|\blove (your|one)\b|\bhonesty\b|\bhumility\b|\bjustice\b|\bten commandments\b|\bgolden rule\b")),
+    ("Worship, Festivals & Practices", _rx(r"\bworship\b|\bprayer\b|\bfestival\b|\bpassover\b|\bPurim\b|\btabernacle\b|\btemple\b|\bsynagogue\b|\bsacrifice\b|\bordinance\b|\bbaptism\b|\bholy communion\b|\bchurch calendar\b")),
+]
+
+IRS_TOPICS = [
+    ("Qur'an & Hadith", _rx(r"\bQur'?an\b|\bhadith\b|\bsurah\b|\brevelation\b|\bMuhammad\b|\bAngel Jibril\b|\bHira\b|\bSunnah\b|\brecitation\b|\bArabic\b")),
+    ("Prophets & Sirah", _rx(r"\bprophet(s)?\b|\bMuhammad\b|\bMakkah\b|\bMedinah\b|\bHijrah\b|\bIdris\b|\bNuh\b|\bIbrahim\b|\bMusa\b|\bIsa\b|\bYusuf\b|\bseal of the prophets\b")),
+    ("Five Pillars & Acts of Worship", _rx(r"\bShahadah\b|\bSalat\b|\bZakat\b|\bSawm\b|\bHajj\b|\bfive pillars\b|\bRamadan\b|\bfasting\b|\bprayer\b|\bpilgrimage\b|\balms\b|\bTawhid\b|\bwudu\b")),
+    ("Ethics & Moral Lessons", _rx(r"\bmoral\b|\bvirtue\b|\bhonesty\b|\bjustice\b|\bkindness\b|\bpatience\b|\btruthful|\bobedience\b|\bhalal\b|\bharam\b|\bmodesty\b|\btrust\b|\bAkhlak\b")),
+    ("Islamic History & Community", _rx(r"\bkhulafa\b|\bAbubakar\b|\bUmar\b|\bUthman\b|\bAli\b|\bcaliph\b|\bMuslim community\b|\bUmrah\b|\bEid\b|\bShari'?ah\b|\bmosque\b|\bJumu'?ah\b")),
+]
+
+COMMERCE_TOPICS = [
+    ("Trade & Distribution", _rx(r"\btrade\b|\bhome trade\b|\bforeign trade\b|\bimport\b|\bexport\b|\bentrepot\b|\bwholesal|\bretail|\bdistribution\b|\bchannel\b|\bmiddleman\b|\bbarter\b")),
+    ("Business Units & Ownership", _rx(r"\bsole (trader|proprietor)\b|\bpartnership\b|\bjoint stock\b|\blimited company\b|\bpublic corporation\b|\bco-operative\b|\bmerger\b|\bamalgamation\b|\bincorporat|\bownership\b|\bshareholder\b")),
+    ("Banking, Finance & Insurance", _rx(r"\bbank\b|\bcentral bank\b|\bcheque\b|\bdraft\b|\bcredit\b|\bloan\b|\boverdraft\b|\binsurance\b|\bpremium\b|\bpolicy\b|\bbroker\b|\bcapital market\b|\bstock exchange\b")),
+    ("Transport & Communication", _rx(r"\btransport\b|\brail\b|\broad (transport)\b|\bwater transport\b|\bair (transport|freight)\b|\bpipeline\b|\bcommunication\b|\bpostal\b|\btelecommunication\b|\bcourier\b|\be-?mail\b")),
+    ("Warehousing & Advertising", _rx(r"\bwarehouse\b|\bstor(e|age)\b|\badvertis|\bpublicity\b|\bsales promotion\b|\bmedia\b|\bbranding\b|\bpackaging\b|\blabel")),
+    ("Trade Documents & Procedures", _rx(r"\binvoice\b|\breceipt\b|\bquotation\b|\bindent\b|\bbill of lading\b|\bconsignment\b|\bdocument of title\b|\bcustoms\b|\bbonded warehouse\b|\bproforma\b|\bcredit note\b|\bdebit note\b")),
+    ("Business Environment & Aids to Trade", _rx(r"\baids? to trade\b|\bbusiness environment\b|\btourism\b|\bmoney market\b|\bcapital\b|\blabour market\b|\bpopulation\b|\bgovernment policy\b|\bprivati[sz]ation\b|\bindustrialisation\b")),
+]
+
+COMPUTER_STUDIES_TOPICS = [
+    ("Computer Hardware", _rx(r"\bhardware\b|\bCPU\b|\bmonitor\b|\bkeyboard\b|\bprinter\b|\bscreen\b|\binput device\b|\boutput device\b|\bmemory\b|\bRAM\b|\bROM\b|\bstorage\b|\bhard (disk|drive)\b|\bflash drive\b|\bperipheral\b")),
+    ("Computer Software", _rx(r"\bsoftware\b|\boperating system\b|\bWindows\b|\bapplication (software|program)\b|\butility program\b|\bsystem software\b|\bprogram\b|\bspreadsheet\b|\bword processor\b|\bdatabase\b")),
+    ("Data Representation & Number Systems", _rx(r"\bbinary\b|\bdecimal\b|\bhexadecimal\b|\boctal\b|\bbit\b|\bbyte\b|\bnibble\b|\bdata representation\b|\bASCII\b|\bBCD\b|\bconversion\b|\blogic (gates?|operations)\b|\btruth table\b")),
+    ("Word Processing & Office Applications", _rx(r"\bword processing\b|\bMS Word\b|\bspreadsheet\b|\bExcel\b|\bcell\b|\bformula\b|\bworksheet\b|\bpresentation\b|\bPowerPoint\b|\bdesktop publishing\b|\btyping\b")),
+    ("Internet & World Wide Web", _rx(r"\binternet\b|\bworld wide web\b|\bweb\b|\bbrowser\b|\be-?mail\b|\bsearch engine\b|\bwebsite\b|\bURL\b|\bhyperlink\b|\bdownload\b|\bupload\b|\bsocial media\b|\bhttps?\b")),
+    ("Programming & Logic", _rx(r"\bprogramming\b|\balgorithm\b|\bflowchart\b|\bpseudocode\b|\bBASIC\b|\bdebugging\b|\bsyntax\b|\bvariable\b|\bloop\b|\bcoding\b")),
+    ("Computer Ethics, Safety & Society", _rx(r"\bvirus\b|\bmalware\b|\bhacking\b|\bplagiarism\b|\bcopyright\b|\bprivacy\b|\bergonomics\b|\bsafety\b|\bethics\b|\bcybercrime\b|\bfraud\b|\bICT\b|\binformation society\b")),
+    ("Networking & Data Communication", _rx(r"\\network\b|\bLAN\b|\bWAN\b|\btopology\b|\bserver\b|\brouter\b|\bmodem\b|\bWi-?Fi\b|\bdata communication\b|\btransmission\b|\bprotocol\b")),
+]
+
+MARKETING_TOPICS = [
+    ("Marketing Mix & Strategy", _rx(r"\bmarketing mix\b|\b4Ps\b|\bmarketing (strategy|concept|plan)\b|\bsegmentation\b|\btarget market\b|\bpositioning\b|\bmarket research\b")),
+    ("Product & Branding", _rx(r"\bproduct\b|\bbrand(ing)?\b|\bpackaging\b|\blabelling\b|\bproduct life cycle\b|\bnew product\b|\bquality\b|\bwarranty\b|\bafter-?sales\b")),
+    ("Pricing", _rx(r"\bprice\b|\bpricing\b|\bcost(-| )plus\b|\bpenetration pricing\b|\bskimming\b|\bdiscount\b|\bmarkup\b|\bprice war\b")),
+    ("Distribution & Channels", _rx(r"\\distribution\b|\bchannel(s)? of\b|\bmiddleman\b|\bwholesaler\b|\bretailer\b|\bagent\b|\bdirect (selling|marketing)\b|\bfranchise\b|\blogistics\b")),
+    ("Promotion & Advertising", _rx(r"\bpromotion\b|\badvertis|\bsales promotion\b|\bpublicity\b|\bpublic relations\b|\bsponsorship\b|\bsocial media\b|\bpersonal selling\b|\bsalesmanship\b")),
+    ("Consumers & Market Environment", _rx(r"\bconsumer\b|\bcustomer\b|\bbuying behaviour\b|\bconsumer behaviour\b|\bdemand\b|\bcompetition\b|\bmarketing environment\b|\bSWOT\b")),
+]
+
+PRE_VOCATIONAL_TOPICS = [
+    ("Agriculture & Animal Care", _rx(r"\bfarm\b|\bcrop\b|\bsoil\b|\banimal\b|\bpoultry\b|\bfish(?:eries)?\b|\bgarden(ing)?\b|\bseed\b|\bplant(ing)?\b|\bharvest\b|\blivestock\b")),
+    ("Food & Nutrition", _rx(r"\bfood\b|\bnutrition\b|\bcook|\bkitchen\b|\bdiet\b|\bmeal\b|\bhygiene\b|\brecipe\b|\bfeeding\b")),
+    ("Crafts, Textiles & Home Management", _rx(r"\bcraft\b|\bsew|\bstitch|\bfabric\b|\bcloth\b|\bweav(e|ing)\b|\bdye(ing)?\b|\bhome management\b|\bcleaning\b|\blaundry\b|\bfurniture\b|\bhous(e|ing)\b")),
+    ("Tools, Equipment & Workshop Practice", _rx(r"\btool\b|\bequipment\b|\bworkshop\b|\bmachine\b|\bhammer\b|\bsaw\b|\bdrill\b|\bmeasur(e|ing)\b|\bsafety (rule|precaution)\b|\bfirst aid\b")),
+    ("Entrepreneurship & Vocational Careers", _rx(r"\bentrepreneur\b|\bbusiness\b|\bvocation(al)?\b|\bcareer\b|\bskill\b|\btrade\b|\bself-?employment\b|\bmoney\b|\bprofit\b")),
+]
+
 # Cross-exam reuse: SSCE/JAMB syllabi overlap heavily, so the WAEC science
 # and social-science rules and the BECE junior maps cover other exams too.
 for exam in ("NECO", "JAMB"):
@@ -350,6 +411,14 @@ TOPIC_MAPS[("JAMB", "Government")] = TOPIC_MAPS[("WAEC", "Government")]
 TOPIC_MAPS[("WAEC", "Further Mathematics")] = MATH_TOPICS
 TOPIC_MAPS[("BECE", "Business Studies")] = BUSINESS_STUDIES_TOPICS
 TOPIC_MAPS[("BECE", "National Value Education")] = NATIONAL_VALUE_EDUCATION_TOPICS
+for exam in ("BECE", "NECO", "WAEC"):
+    TOPIC_MAPS[(exam, "Christian Religious Studies")] = CRS_TOPICS
+TOPIC_MAPS[("WAEC", "Islamic Religious Studies")] = IRS_TOPICS
+TOPIC_MAPS[("BECE", "Pre-Vocational Studies")] = PRE_VOCATIONAL_TOPICS
+for exam in ("NECO", "WAEC"):
+    TOPIC_MAPS[(exam, "Commerce")] = COMMERCE_TOPICS
+    TOPIC_MAPS[(exam, "Computer Studies")] = COMPUTER_STUDIES_TOPICS
+TOPIC_MAPS[("WAEC", "Marketing")] = MARKETING_TOPICS
 
 
 def tag_topic(exam: str, subject: str, prompt: str, option_texts: list[str]) -> str | None:

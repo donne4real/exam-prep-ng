@@ -75,6 +75,15 @@ SECTIONS = {
     # BECE junior-secondary subjects not covered by TestDriller
     ("BECE", "business-studies"): "bece/business-studies",
     ("BECE", "national-value-education"): "bece/national-value-education",
+    # Third pass: sections probed live on the site (the rest are stubs).
+    # Known-dead (listings exist but every question page 404s): WAEC
+    # further-mathematics, WAEC CRS/IRS, BECE CRS/NVE/basic-science.
+    ("BECE", "pre-vocational-studies"): "bece/pre-vocational-studies",
+    ("NECO", "commerce"): "neco/commerce",
+    ("NECO", "computer-studies"): "neco/computer-studies",
+    ("WAEC", "commerce"): "waec/commerce",
+    ("WAEC", "computer-studies"): "waec/computer-studies",
+    ("WAEC", "marketing"): "waec/marketing",
 }
 
 # A question block on a listing page: question-year link, prompt, options,
@@ -85,7 +94,7 @@ BLOCK_RE = re.compile(
 )
 YEAR_RE = re.compile(r"examyear=(\d{4})")
 ID_RE = re.compile(rf'class="view-answer-btn"', re.DOTALL)
-HREF_RE = re.compile(rf'href="{BASE}/([a-z-]+)/(\d+)"')
+HREF_RE = re.compile(rf'href="({BASE}/[a-z0-9-]+/\d+)"')  # 1=url 2=slug 3=id (via outer groups)
 
 
 def fetch_html(url: str, cache_path: Path, sleep: float, retries: int = 2) -> str | None:
@@ -112,9 +121,14 @@ def fetch_html(url: str, cache_path: Path, sleep: float, retries: int = 2) -> st
     return None
 
 
-def collect_ids(exam: str, subject: str, path: str, sleep: float, max_pages: int) -> dict[str, int]:
-    """Walk listing pages; returns {question_id: year} in listing order."""
-    ids: dict[str, int] = {}
+def collect_ids(exam: str, subject: str, path: str, sleep: float, max_pages: int) -> dict[str, tuple[int, str]]:
+    """Walk listing pages; returns {question_id: (year, question_url)}.
+
+    The href's subject slug can differ from the section slug (e.g. the WAEC
+    CRS listing links to christian-religious-knowledge-crk pages), so the
+    exact URL from the listing is kept for fetching.
+    """
+    ids: dict[str, tuple[int, str]] = {}
     for page in range(1, max_pages + 1):
         cache_path = CACHE / f"list-{path.replace('/', '-')}-p{page}.html"
         from_net = not (cache_path.exists() and cache_path.stat().st_size > 1000)
@@ -126,12 +140,13 @@ def collect_ids(exam: str, subject: str, path: str, sleep: float, max_pages: int
         found = 0
         for block in BLOCK_RE.finditer(html):
             m = HREF_RE.search(block.group(1))
-            if not m or m.group(1) != subject:
+            if not m:
                 continue
             year_m = YEAR_RE.search(block.group(1))
-            qid = m.group(2)
+            url = m.group(1)
+            qid = url.rsplit("/", 1)[1]
             if qid not in ids:
-                ids[qid] = int(year_m.group(1)) if year_m else 0
+                ids[qid] = (int(year_m.group(1)) if year_m else 0, url)
                 found += 1
         print(f"  page {page}: +{found} (total {len(ids)})", flush=True)
         if found == 0:
@@ -198,9 +213,8 @@ def scrape_section(exam: str, subject: str, path: str, sleep: float, max_pages: 
 
     items: list[dict] = []
     misses = 0
-    for n, (qid, year) in enumerate(ids.items(), start=1):
-        url = f"{BASE}/{subject}/{qid}"
-        cache_path = CACHE / f"q-{subject}-{qid}.html"
+    for n, (qid, (year, url)) in enumerate(ids.items(), start=1):
+        cache_path = CACHE / f"q-{url[len(BASE) + 1:].replace('/', '-')}.html"
         from_net = not (cache_path.exists() and cache_path.stat().st_size > 1000)
         html = fetch_html(url, cache_path, sleep)
         if from_net:
