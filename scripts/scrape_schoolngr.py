@@ -7,9 +7,9 @@ answers and explanations live on per-question pages:
   listing:  /classroom/{exam}/{subject}?page=N
   question: /classroom/{subject}/{id}
 
-Sections cover BECE, WAEC and NECO English Language and Mathematics —
-the gaps TestDriller cannot fill (TestDriller publishes no NECO papers
-and no WAEC English/Mathematics). robots.txt allows all paths.
+Sections cover BECE, WAEC, NECO and JAMB core subjects (English,
+Mathematics, sciences, social sciences) — TestDriller publishes only a
+subset of these. robots.txt allows all paths.
 
 Writes data/extracted/sngc_{exam}_{subject}.json with items shaped like
 the tdw_* files (prompt, options, correctOptionId, explanation, year,
@@ -48,6 +48,33 @@ SECTIONS = {
     ("WAEC", "mathematics"): "waec/mathematics",
     ("NECO", "english-language"): "neco/english-language",
     ("NECO", "mathematics"): "neco/mathematics",
+    # Core SSCE sciences/social sciences still missing per exam
+    ("NECO", "biology"): "neco/biology",
+    ("NECO", "chemistry"): "neco/chemistry",
+    ("NECO", "physics"): "neco/physics",
+    ("NECO", "economics"): "neco/economics",
+    ("NECO", "geography"): "neco/geography",
+    ("NECO", "literature-in-english"): "neco/literature-in-english",
+    ("NECO", "agricultural-science"): "neco/agricultural-science",
+    ("NECO", "civic-education"): "neco/civic-education",
+    ("WAEC", "government"): "waec/government",
+    ("WAEC", "geography"): "waec/geography",
+    ("WAEC", "literature-in-english"): "waec/literature-in-english",
+    ("WAEC", "agricultural-science"): "waec/agricultural-science",
+    ("WAEC", "further-mathematics"): "waec/further-mathematics",
+    ("WAEC", "civic-education"): "waec/civic-education",
+    # JAMB beyond English/Mathematics (EduPadi covers only those two)
+    ("JAMB", "biology"): "jamb/biology",
+    ("JAMB", "chemistry"): "jamb/chemistry",
+    ("JAMB", "physics"): "jamb/physics",
+    ("JAMB", "economics"): "jamb/economics",
+    ("JAMB", "government"): "jamb/government",
+    ("JAMB", "geography"): "jamb/geography",
+    ("JAMB", "literature-in-english"): "jamb/literature-in-english",
+    ("JAMB", "agricultural-science"): "jamb/agricultural-science",
+    # BECE junior-secondary subjects not covered by TestDriller
+    ("BECE", "business-studies"): "bece/business-studies",
+    ("BECE", "national-value-education"): "bece/national-value-education",
 }
 
 # A question block on a listing page: question-year link, prompt, options,
@@ -63,7 +90,10 @@ HREF_RE = re.compile(rf'href="{BASE}/([a-z-]+)/(\d+)"')
 
 def fetch_html(url: str, cache_path: Path, sleep: float, retries: int = 2) -> str | None:
     if cache_path.exists() and cache_path.stat().st_size > 1000:
-        return cache_path.read_text(encoding="utf-8", errors="replace")
+        html = cache_path.read_text(encoding="utf-8", errors="replace")
+        if "404:Page Not Found" not in re.sub(r"\s+", "", html[:2000]):
+            return html
+        cache_path.unlink()  # styled 404 page; refetch below
     cache_path.parent.mkdir(parents=True, exist_ok=True)
     for attempt in range(retries + 1):
         try:

@@ -49,16 +49,26 @@ LEGACY_MONOLITH = DATA_DIR / "questions.json"
 SUBJECT_NAMES = {
     "agricultural-science": "Agricultural Science",
     "basic-science": "Basic Science",
+    "biology": "Biology",
+    "business-studies": "Business Studies",
+    "chemistry": "Chemistry",
     "civic-education": "Civic Education",
     "commerce": "Commerce",
     "computer-studies": "Computer Studies",
     "crk": "Christian Religious Knowledge",
+    "economics": "Economics",
     "english": "English Language",
     "english-language": "English Language",
+    "further-mathematics": "Further Mathematics",
+    "geography": "Geography",
+    "government": "Government",
     "history": "History",
     "home-economics": "Home Economics",
     "irk": "Islamic Religious Knowledge",
+    "literature-in-english": "Literature-in-English",
     "mathematics": "Mathematics",
+    "national-value-education": "National Value Education",
+    "physics": "Physics",
 }
 
 # Generic fallback topics from the old keyword tagger; not useful for the
@@ -283,6 +293,63 @@ TOPIC_MAPS: dict[tuple[str, str], list[tuple[str, re.Pattern]]] = {
         ("Basic Political Concepts", _rx(r"\bstate\b|\bsovereignty\b|\bpower\b|\bauthority\b|\blegitimacy\b|\bpolitical culture\b|\bpolitical sociali[sz]ation\b|\bdemocracy\b|\bgovernment\b|\bnation\b|\bsociety\b|\bideology\b|\bcapitalism\b|\bsocialism\b|\bcommunism\b|\bfascism\b|\bwelfare state\b|\bliberali[sz]|")),
     ],
 }
+
+GEOGRAPHY_TOPICS = [
+    ("Map Reading & Interpretation", _rx(r"\bmap\b|\bscale\b|\bcontour\b|\brelief\b|\bgradient\b|\blatitude\b|\blongitude\b|\bcoordinate\b|\bcompass\b|\bbearing\b|\blegend\b|\binset\b")),
+    ("Environmental Hazards & Conservation", _rx(r"\bhazard\b|\berosion\b|\bdrought\b|\bdesertification\b|\bflood\b|\bearthquake\b|\bvolcan|\bconservation\b|\bpollution\b|\bdeforestation\b|\bglobal warming\b|\breafforestation\b")),
+    ("Population & Settlement", _rx(r"\bpopulation\b|\bcensus\b|\bmigration\b|\bimmigration\b|\bsettlement\b|\burbanisation\b|\burbanization\b|\brural\b|\boverpopulat\b|\bdensity\b")),
+    ("Economic & Human Geography", _rx(r"\bfarming\b|\bagricultur|\bmining\b|\bmineral\b|\bindustr\b|\bmanufactur|\btourism\b|\btransport\b|\btrade\b|\bfishing\b|\blumbering\b|\braw material")),
+    ("Climate & Weather", _rx(r"\bclimate\b|\bweather\b|\brainfall\b|\btemperature\b|\bwind\b|\bhumidity\b|\bseason\b|\bsavanna\b|\bclimatic\b|\bsunshine\b|\bbarometer\b|\brain gauge\b|\bweather station\b|\banemometer\b")),
+    ("Vegetation & Soils", _rx(r"\bvegetation\b|\bsoil\b|\bmangrove\b|\bforest\b|\bgrassland\b|\blaterite\b|\bfertility\b|\bleaching\b|\bhorizon\b")),
+    ("Drainage & Water Resources", _rx(r"\bdrainage\b|\briver\b|\blake\b|\bflood plain\b|\bwaterfall\b|\bdelta\b|\bgroundwater\b|\bwatershed\b|\birrigation\b|\bcatchment\b")),
+    ("Regional Geography", _rx(r"\bNigeria\b|\bNiger Delta\b|\bLagos\b|\bKano\b|\bWest Africa\b|\bECOWAS\b|\bSahel\b|\bstate(s)? of Nigeria\b|\blocal government area\b")),
+    ("Physical Geography & Rocks", _rx(r"\brock\b|\bgranite\b|\blimestone\b|\bsedimentary\b|\bigneous\b|\bmetamorphic\b|\bweathering\b|\bmass wasting\b|\blandform\b|\bplateau\b|\bplain\b|\bmountain\b")),
+]
+
+LITERATURE_TOPICS = [
+    ("Figures of Speech", _rx(r"\bmetaphor\b|\bsimile\b|\bpersonification\b|\bhyperbole\b|\boxymoron\b|\birony\b|\bmetonymy\b|\bsynecdoche\b|\balliteration\b|\bassonance\b|\binnuendo\b|\bantithesis\b|\blitotes\b|\beuphemism\b|\bparadox\b|\bpun\b|\bonomatopoeia\b")),
+    ("Literary Devices & Techniques", _rx(r"\bflashback\b|\bforeshadow\b|\bsuspense\b|\bsymbolis|\bimagery\b|\ballusion\b|\bsatire\b|\bsarcasm\b|\bhumou?r\b|\btragic hero\b|\bcomic relief\b|\bsoliloquy\b|\baside\b|\bparable\b|\ballegory\b|\bdiction\b|\birony\b|\bmood\b|\btone\b")),
+    ("Genres & Literary Forms", _rx(r"\bgenre\b|\bdrama\b|\bpoetry\b|\bpoem\b|\bprose\b|\bnovel\b|\bshort story\b|\btragedy\b|\bcomedy\b|\bfable\b|\bballad\b|\bsonnet\b|\bode\b|\belegy\b|\belegy\b|\blanka\b|\bdirge\b|\bpanegyric\b|\bfree verse\b|\bstanza\b|\brhyme\b|\brhythm\b|\bblank verse\b")),
+    ("Character & Characterization", _rx(r"\bcharacter\b|\bprotagonist\b|\bantagonist\b|\bhero\b|\bheroine\b|\bvillain\b|\bnarrator\b|\bpersona\b|\bcharacterisation\b|\bcharacterization\b|\bflat character\b|\bround character\b|\bfoil\b")),
+    ("Plot & Setting", _rx(r"\bplot\b|\bsetting\b|\bexposition\b|\bclimax\b|\bdenouement\b|\bdénouement\b|\bconflict\b|\bepisode\b|\bscene\b|\bact\b|\bplot structure\b")),
+    ("Themes & Subject Matter", _rx(r"\btheme(s)? of\b|\bmoral lesson\b|\bmessage of\b|\bsubject matter\b")),
+    ("African & Non-African Works", _rx(r"\bAfrican\b|\bNigerian\b|\bWole Soyinka\b|\bChinua Achebe\b|\bOkigbo\b|\bClark\b|\bp'Bitek\b|\bShakespeare\b|\bHarvest of Corruption\b|\bLion and the Jewel\b|\bMayor of Casterbridge\b|\bVendetta\b|\bLook Back in Anger\b|\bLonely Days\b|\bPurple Hibiscus\b|\bSecond Class Citizen\b|\bUnexpected Joy at Dawn\b")),
+]
+
+BUSINESS_STUDIES_TOPICS = [
+    ("Book-keeping & Accounting", _rx(r"\bbook.?keeping\b|\bledger\b|\bjournal\b|\btrial balance\b|\bdouble entry\b|\bdebit\b|\bcredit\b|\baccount\b|\bbalance sheet\b|\bfinal account\b|\btrading account\b|\bprofit and loss\b")),
+    ("Commerce & Trade", _rx(r"\btrade\b|\bcommerce\b|\bhome trade\b|\bforeign trade\b|\bimport\b|\bexport\b|\bwholesal|\bretail|\bbarter\b|\bmiddleman\b|\bdistribution\b|\bchannel\b")),
+    ("Office Practice & Administration", _rx(r"\boffice\b|\bfiling\b|\bdocument\b|\bmail\b|\breceptionist\b|\bclerk\b|\boffice equipment\b|\bmachine\b|\bshorthand\b|\btypewriting\b|\bsecretar|\brequisition\b|\binventory\b")),
+    ("Business Ownership & Organisation", _rx(r"\bsole trader\b|\bpartnership\b|\bcompany\b|\bcooperative\b|\bcorporation\b|\bpublic enterprise\b|\bprivate sector\b|\bownership\b|\bentrepreneur\b|\blimited liability\b")),
+    ("Business Communication", _rx(r"\bcommunication\b|\bletter\b|\bmemorandum\b|\bmemo\b|\btelephone\b|\be-?mail\b|\bnotice\b|\bminute(s)? (of|book)\b|\breport writing\b")),
+    ("Consumerism, Banking & Insurance", _rx(r"\bconsumer\b|\bbank\b|\bcheque\b|\bsavings\b|\bcurrent account\b|\binsurance\b|\bpremium\b|\bpolicy\b|\bpayment\b|\bmoney\b|\bpostal service\b|\bagency\b")),
+]
+
+NATIONAL_VALUE_EDUCATION_TOPICS = [
+    ("National Symbols & Patriotism", _rx(r"\bnational (symbol|flag|anthem|pledge|coat of arms|consciousness)\b|\banthem\b|\bpledge\b|\bpatriotis|\bnationalism\b|\bnational unity\b|\bmotto\b|\bNYSC\b")),
+    ("Civic Rights, Duties & Democracy", _rx(r"\bcitizenship\b|\brights?\b|\bdut(y|ies)\b|\bobligation\b|\bdemocra\b|\bvot(e|ing|er)\b|\belection\b|\brule of law\b|\bconstitut\b|\bfranchise\b")),
+    ("Security Education & Personal Safety", _rx(r"\bsecurity\b|\bsafety\b|\bemergency\b|\bcrime\b|\bkidnapp\b|\bthef?t\b|\bviolence\b|\balert\b|\bvigilance\b|\btrafficking\b|\bcultism\b")),
+    ("Social Studies & Society", _rx(r"\bsociety\b|\bsocial\b|\bfamily\b|\bculture\b|\bmarriage\b|\bcommunity\b|\bgroup\b|\bnorms?\b|\bvalues?\b|\bsocialisation\b|\bsocialization\b|\bpeer\b")),
+    ("Government & Institutions", _rx(r"\bgovernment\b|\binstitution\b|\bagenc(y|ies)\b|\bpolice\b|\barmy\b|\blocal government\b|\btraditional ruler\b|\bleadership\b|\bgovernance\b")),
+    ("Health, Drugs & Social Vices", _rx(r"\bdrug\b|\balcohol\b|\bsubstance\b|\bHIV\b|\bhealth\b|\bhygiene\b|\bcorruption\b|\bexamination malpractice\b|\bprostitution\b")),
+]
+
+# Cross-exam reuse: SSCE/JAMB syllabi overlap heavily, so the WAEC science
+# and social-science rules and the BECE junior maps cover other exams too.
+for exam in ("NECO", "JAMB"):
+    TOPIC_MAPS[(exam, "Biology")] = TOPIC_MAPS[("WAEC", "Biology")]
+    TOPIC_MAPS[(exam, "Chemistry")] = TOPIC_MAPS[("WAEC", "Chemistry")]
+    TOPIC_MAPS[(exam, "Physics")] = TOPIC_MAPS[("WAEC", "Physics")]
+    TOPIC_MAPS[(exam, "Economics")] = TOPIC_MAPS[("WAEC", "Economics")]
+for exam in ("WAEC", "NECO", "JAMB"):
+    TOPIC_MAPS[(exam, "Geography")] = GEOGRAPHY_TOPICS
+    TOPIC_MAPS[(exam, "Literature-in-English")] = LITERATURE_TOPICS
+    TOPIC_MAPS[(exam, "Agricultural Science")] = TOPIC_MAPS[("BECE", "Agricultural Science")]
+    TOPIC_MAPS[(exam, "Civic Education")] = TOPIC_MAPS[("BECE", "Civic Education")]
+TOPIC_MAPS[("JAMB", "Government")] = TOPIC_MAPS[("WAEC", "Government")]
+TOPIC_MAPS[("WAEC", "Further Mathematics")] = MATH_TOPICS
+TOPIC_MAPS[("BECE", "Business Studies")] = BUSINESS_STUDIES_TOPICS
+TOPIC_MAPS[("BECE", "National Value Education")] = NATIONAL_VALUE_EDUCATION_TOPICS
 
 
 def tag_topic(exam: str, subject: str, prompt: str, option_texts: list[str]) -> str | None:
