@@ -7,12 +7,18 @@ import react from '@vitejs/plugin-react';
 // supported"), which broke `vite build` on Node >= 22.
 const { VitePWA } = createRequire(import.meta.url)('vite-plugin-pwa') as typeof import('vite-plugin-pwa');
 
-// GitHub Pages serves the site under /exam-prep-ng/; Netlify (and most
-// other hosts) serve it at the domain root. Netlify sets NETLIFY=true in
-// its build environment, so one build config works for both.
-const base = process.env.NETLIFY ? '/' : '/exam-prep-ng/';
+// The app is hosted at four different base paths, so pick one per target:
+//   GitHub Pages  -> /exam-prep-ng/   (default, `npm run build`)
+//   Netlify       -> /                (Netlify sets NETLIFY=true in CI)
+//   Cloudflare    -> /                (Cloudflare Pages sets CF_PAGES=true)
+//   Android APK   -> /                (`vite build --mode android`, Capacitor)
+// The PWA scope/start_url and the router basename follow this value.
+const baseFor = (mode: string) =>
+  process.env.NETLIFY || process.env.CF_PAGES || mode === 'android' ? '/' : '/exam-prep-ng/';
 
-export default defineConfig({
+export default defineConfig(({ mode }) => {
+  const base = baseFor(mode);
+  return {
   // Set base path for GitHub Pages deployment at /exam-prep-ng/
   base,
   plugins: [
@@ -94,4 +100,5 @@ export default defineConfig({
     cssCodeSplit: true,
     sourcemap: false,
   },
+  };
 });
