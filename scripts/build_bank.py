@@ -3,7 +3,10 @@
 
 Content policy (v3 bank):
   INCLUDE  td_*.*   TestDriller Nigerian BECE objective past questions
+  INCLUDE  tdw_*    TestDriller WAEC SSCE objective past questions
   INCLUDE  sng_bst  SchoolNGR.com BECE past questions
+  INCLUDE  sngc_*   SchoolNGR.com classroom past questions (NECO/WAEC
+                    English & Mathematics, BECE English) with explanations
   INCLUDE  jamb_*   EduPadi JAMB UTME past questions
   EXCLUDE  bece_*   Kuulchat.com GHANA BECE papers (not Nigerian; keep for a
                     possible Ghana edition later)
@@ -132,9 +135,22 @@ MATH_TOPICS = [
     ("Geometry", _rx(r"\bangle\b|\btriangle\b|\bpolygon\b|\bquadri|\bparallel\b|\bperpendicular\b|\bcircle\b|\bchord\b|\bradius\b|\bdiameter\b|\bsimilar (shapes|triangles)\b|\bcongruent\b|\bvertic(ally|es)\b|\bhorizontal\b|\bpoints? (lie|lies)\b")),
 ]
 
+COMPREHENSION_MIN_LEN = 600  # English comprehension passages exceed this
+
+ENGLISH_TOPICS = [
+    ("Phonetics", _rx(r"\bvowel\b|\bconsonant\b|\bdiphthong\b|\bsyllable\b|\bstress\b|\btranscription\b|\bphoneme\b|\brhyme\b|\bsilent (letter|consonant)\b|\bpronounced\b|\bphonetic\b|/əʊ/|/uː/|/ɪ/|/æ/|/θ/|/ð/")),
+    ("Idioms & Figurative Language", _rx(r"\bidiom\b|\bfigurative\b|\bmetaphor\b|\bsimile\b|\bpersonification\b|\bhyperbole\b|\bparadox\b|\boxymoron\b|\birony\b|\bonomatopoeia\b|\balliteration\b|\banalogy\b")),
+    ("Register & Written Communication", _rx(r"\bregister\b|\bformal letter\b|\binformal letter\b|\bessay\b|\bthesis\b|\bparagraph\b|\btopic sentence\b|\bcitation\b|\bstyle guide\b|\bcollocation\b|\bdiaspora\b|\bcode-?switching\b")),
+    ("Lexis & Vocabulary", _rx(r"\bclosest in meaning\b|\bopposite in meaning\b|\bsynonym\b|\bantonym\b|\bmeaning of the (word|phrase|expression)\b|\bchoose the word\b|\bnearest in meaning\b|\bfill in the gap\b|\blexical\b")),
+    ("Grammar", _rx(r"\btense\b|\bverb\b|\bnoun\b|\bpronoun\b|\bpreposition\b|\barticle\b|\bconcord\b|\bsubject-?verb\b|\badverb\b|\badjective\b|\bplural\b|\bsingular\b|\bclause\b|\bphrase\b|\bpassive\b|\bactive voice\b|\breported speech\b|\bdirect speech\b|\bquestion tag\b|\bmodal\b|\bconditional\b")),
+    ("Sentence Structure & Punctuation", _rx(r"\bsentence (type|structure)\b|\bsimple sentence\b|\bcompound sentence\b|\bcomplex sentence\b|\bpunctuation\b|\bsemicolon\b|\bcomma\b|\bfull stop\b|\bspelling\b|\barrange.*sentence|\bdangling\b|\bcleft\b")),
+]
+
 TOPIC_MAPS: dict[tuple[str, str], list[tuple[str, re.Pattern]]] = {
     ("BECE", "Mathematics"): MATH_TOPICS,
     ("JAMB", "Mathematics"): MATH_TOPICS,
+    ("NECO", "Mathematics"): MATH_TOPICS,
+    ("WAEC", "Mathematics"): MATH_TOPICS,
     ("BECE", "Basic Science"): [
         ("Drugs & Substance Abuse", _rx(r"\bdrug\b|\balcohol\b|\btobacco\b|\bsmoking\b|\bnarcotic\b|\bsubstance abuse\b")),
         ("Light & Sound", _rx(r"\blight\b|\breflection\b|\brefraction\b|\bshadow\b|\bmirror\b|\blens\b|\bsound\b|\becho\b|\bwave\b")),
@@ -186,14 +202,12 @@ TOPIC_MAPS: dict[tuple[str, str], list[tuple[str, re.Pattern]]] = {
         ("Consumer Education", _rx(r"\bconsumer\b|\bbuying\b|\badulterat\b|\bshopping\b|\blabel\b|\bexpiration\b|\bmarket\b|\bmoney\b")),
         ("Personal Health & Hygiene", _rx(r"\bhygiene\b|\bcleanliness\b|\btoilet\b|\bsleep\b|\bexercise\b|\bposture\b|\bgrooming\b|\bself-care\b")),
     ],
-    ("JAMB", "English Language"): [
-        ("Phonetics", _rx(r"\bvowel\b|\bconsonant\b|\bdiphthong\b|\bsyllable\b|\bstress\b|\btranscription\b|\bphoneme\b|\brhyme\b|\bsilent (letter|consonant)\b|\bpronounced\b|\bphonetic\b|/əʊ/|/uː/|/ɪ/|/æ/|/θ/|/ð/")),
-        ("Idioms & Figurative Language", _rx(r"\bidiom\b|\bfigurative\b|\bmetaphor\b|\bsimile\b|\bpersonification\b|\bhyperbole\b|\bparadox\b|\boxymoron\b|\birony\b|\bonomatopoeia\b|\balliteration\b|\banalogy\b")),
-        ("Register & Written Communication", _rx(r"\bregister\b|\bformal letter\b|\binformal letter\b|\bessay\b|\bthesis\b|\bparagraph\b|\btopic sentence\b|\bcitation\b|\bstyle guide\b|\bcollocation\b|\bdiaspora\b|\bcode-?switching\b")),
-        ("Lexis & Vocabulary", _rx(r"\bclosest in meaning\b|\bopposite in meaning\b|\bsynonym\b|\bantonym\b|\bmeaning of the (word|phrase|expression)\b|\bchoose the word\b|\bnearest in meaning\b|\bfill in the gap\b|\blexical\b")),
-        ("Grammar", _rx(r"\btense\b|\bverb\b|\bnoun\b|\bpronoun\b|\bpreposition\b|\barticle\b|\bconcord\b|\bsubject-?verb\b|\badverb\b|\badjective\b|\bplural\b|\bsingular\b|\bclause\b|\bphrase\b|\bpassive\b|\bactive voice\b|\breported speech\b|\bdirect speech\b|\bquestion tag\b|\bmodal\b|\bconditional\b")),
-        ("Sentence Structure & Punctuation", _rx(r"\bsentence (type|structure)\b|\bsimple sentence\b|\bcompound sentence\b|\bcomplex sentence\b|\bpunctuation\b|\bsemicolon\b|\bcomma\b|\bfull stop\b|\bspelling\b|\barrange.*sentence|\bdangling\b|\bcleft\b")),
-    ],
+    # English Language rules are exam-agnostic (phonetics, lexis, grammar…);
+    # long prompts are comprehension passages on every exam.
+    ("JAMB", "English Language"): ENGLISH_TOPICS,
+    ("BECE", "English Language"): ENGLISH_TOPICS,
+    ("NECO", "English Language"): ENGLISH_TOPICS,
+    ("WAEC", "English Language"): ENGLISH_TOPICS,
     # ── WAEC SSCE sciences & social sciences ─────────────────────────────
     ("WAEC", "Biology"): [
         ("Health & Diseases", _rx(r"\bdisease\b|\bmalaria\b|\bplasmodium\b|\bpathogen\b|\bimmun|\bvaccin\b|\bantibod|\bantigen\b|\bAIDS\b|\bHIV\b|\bcholera\b|\btyphoid\b|\btuberculosis\b|\bmeasles\b|\bringworm\b|\bhygiene\b|\bdrug abuse\b|\bmosquito\b")),
@@ -270,11 +284,9 @@ TOPIC_MAPS: dict[tuple[str, str], list[tuple[str, re.Pattern]]] = {
     ],
 }
 
-COMPREHENSION_MIN_LEN = 600  # JAMB English passage prompts exceed this
-
 
 def tag_topic(exam: str, subject: str, prompt: str, option_texts: list[str]) -> str | None:
-    if (exam, subject) == ("JAMB", "English Language") and len(prompt) >= COMPREHENSION_MIN_LEN:
+    if subject == "English Language" and len(prompt) >= COMPREHENSION_MIN_LEN:
         return "Comprehension"
     rules = TOPIC_MAPS.get((exam, subject))
     if not rules:
@@ -367,6 +379,7 @@ class Bank:
     def __init__(self) -> None:
         self.questions: list[dict] = []
         self.seen: dict[str, str] = {}  # "exam|subject|fingerprint" -> id kept
+        self.exam_prints: dict[str, str] = {}  # fingerprint -> exam (cross-exam guard)
         self.used_ids: set[str] = set()
         self.dropped: dict[str, int] = {}
         self.duplicates = 0
@@ -412,6 +425,13 @@ class Bank:
         if key in self.seen:
             self.duplicates += 1
             return False
+        fp = key.split("|", 2)[2]
+        if fp in self.exam_prints and self.exam_prints[fp] != exam:
+            # Same question under two exams fails validation; keep the copy
+            # from the source that loaded first.
+            self.dropped["cross-exam duplicate"] = self.dropped.get("cross-exam duplicate", 0) + 1
+            return False
+        self.exam_prints[fp] = exam
 
         qid = self._next_id(exam, subject, year, number)
         question = {
@@ -567,6 +587,63 @@ def load_sng(bank: Bank) -> None:
     print(f"  sng_bst: {len(items)} items -> {added} kept")
 
 
+def load_sngc(bank: Bank) -> None:
+    """SchoolNGR classroom files: sngc_{exam}_{subject}.json, one per section.
+
+    Same site as sng_bst but from the classroom section; every question
+    carries its answer and usually an explanation. Question ids are shared
+    across exam sections on the site, so a question already banked under a
+    different exam is dropped (the validator forbids cross-exam duplicates).
+    """
+    seen_qids: dict[str, str] = {}  # site question id -> exam already banked
+    for path in sorted(EXTRACTED.glob("sngc_*.json")):
+        m = re.match(r"sngc_([a-z]+)_(.+)\.json$", path.name)
+        if not m:
+            continue
+        exam = m.group(1).upper()
+        subject = SUBJECT_NAMES.get(m.group(2), m.group(2).replace("-", " ").title())
+        with open(path, encoding="utf-8") as fh:
+            items = json.load(fh)
+        added = 0
+        for item in items:
+            year = item.get("year") or 0
+            if not (1980 <= year <= 2035):  # SchoolNGR WAEC papers start at 1988
+                bank.dropped["sngc without year"] = bank.dropped.get("sngc without year", 0) + 1
+                continue
+            url = item.get("sourceUrl") or ""
+            qid_m = re.search(r"/(\d+)$", url)
+            qid = qid_m.group(1) if qid_m else ""
+            if qid and qid in seen_qids and seen_qids[qid] != exam:
+                bank.dropped["sngc cross-exam duplicate"] = bank.dropped.get("sngc cross-exam duplicate", 0) + 1
+                continue
+            if DIAGRAM_RE.search(item.get("prompt") or ""):
+                bank.dropped["diagram-dependent"] = bank.dropped.get("diagram-dependent", 0) + 1
+                continue
+            raw_opts = item.get("options") or []
+            options = [
+                {"id": o.get("id", chr(ord("a") + i)), "text": strip_prefix(o.get("text") or "")}
+                for i, o in enumerate(raw_opts)
+                if isinstance(o, dict)
+            ]
+            ok = bank.add(
+                exam=exam,
+                subject=subject,
+                year=year,
+                prompt=item.get("prompt"),
+                options=options,
+                correct_option_id=(item.get("correctOptionId") or "").lower(),
+                number=item.get("questionNumber") or added + 1,
+                explanation=item.get("explanation"),
+                source=f"SchoolNGR {exam} past questions",
+                source_url=url or None,
+            )
+            if ok:
+                if qid:
+                    seen_qids[qid] = exam
+                added += 1
+        print(f"  {path.name}: {len(items)} items -> {added} kept")
+
+
 def load_edupadi_jamb(bank: Bank) -> None:
     """EduPadi format: lettered options + correctAnswer + correctAnswerText."""
     added_total = 0
@@ -673,6 +750,7 @@ def main() -> int:
     load_td(bank)
     load_tdw(bank)
     load_sng(bank)
+    load_sngc(bank)
     load_edupadi_jamb(bank)
 
     bank.apply_topic_tags()

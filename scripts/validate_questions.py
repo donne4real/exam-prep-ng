@@ -57,7 +57,7 @@ JUNK_EXPLANATION_PATTERNS = [
 
 MAX_PROMPT_LEN = 6000  # JAMB English comprehension passages live in the prompt
 MAX_OPTION_LEN = 500
-VALID_YEARS = range(1990, 2036)
+VALID_YEARS = range(1980, 2036)  # SchoolNGR WAEC English starts at 1988
 
 
 def is_junk_explanation(text: str | None) -> bool:
